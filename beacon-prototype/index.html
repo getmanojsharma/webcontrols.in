@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Beacon CrewSuite Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@page{size:297mm 210mm;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0B2545;--navy2:#13315C;--ocean:#1D4E89;--teal:#0FA3B1;--teal-l:#E3F6F7;--bg:#F3F6FA;--line:#E2E8F0;--ink:#1A2433;--mut:#64748B;--red:#D64545;--grn:#2E9E6A}
+html,body{background:#55657a;font-family:Inter,'Segoe UI',Arial,sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:297mm;height:210mm;background:#fff;margin:18px auto;position:relative;overflow:hidden;padding:14px 28px 0;display:flex;flex-direction:column;box-shadow:0 10px 30px rgba(0,0,0,.25);break-after:page;page-break-after:always}
+@media print{html,body{background:#fff}.page{margin:0;box-shadow:none}}
+.ph{display:flex;justify-content:space-between;align-items:center;height:50px;border-bottom:2px solid var(--navy);margin-bottom:12px;flex:none}
+.ph-l{display:flex;gap:12px;align-items:center}
+.ph-no{background:var(--navy);color:#fff;font-weight:800;font-size:12px;border-radius:7px;padding:6px 9px;letter-spacing:.5px}
+.ph h2{font-size:18px;color:var(--navy);font-weight:800;letter-spacing:-.2px}
+.ph p{font-size:11px;color:var(--mut);margin-top:2px}
+.ph-r{font-size:10px;color:var(--mut);text-align:right;font-weight:600;letter-spacing:.3px;line-height:1.5}
+.ph-r b{color:var(--teal)}
+.pb{flex:1;min-height:0;display:flex;gap:16px}
+.pb.full{flex-direction:column;gap:10px}
+.pf{height:26px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:9px;color:#94a3b8;border-top:1px solid var(--line);margin-top:8px;flex:none}
+.shot{border:1px solid #cbd5e1;border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(15,35,70,.12);background:#fff;flex:none;align-self:flex-start}
+.bar{height:24px;background:#e9eef5;display:flex;align-items:center;gap:5px;padding:0 10px;border-bottom:1px solid #d5dde8}
+.bar i{width:8px;height:8px;border-radius:50%;background:#f87171}.bar i:nth-child(2){background:#fbbf24}.bar i:nth-child(3){background:#34d399}
+.bar span{margin-left:12px;background:#fff;border-radius:5px;padding:2px 12px;font-size:9.5px;color:#475569;flex:1;max-width:420px}
+.notes{flex:1;display:flex;flex-direction:column;gap:9px;min-width:0}
+.notes h4{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--teal);font-weight:800;margin-bottom:2px}
+.note{display:flex;gap:8px;font-size:10.3px;line-height:1.45;color:#334155}
+.note b{color:var(--navy)}
+.note .n,.mk{flex:none;width:17px;height:17px;border-radius:50%;background:#F43F5E;color:#fff;font-size:9.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.app .mk{width:23px;height:23px;font-size:12.5px;box-shadow:0 0 0 3px #fff,0 2px 6px rgba(244,63,94,.5);vertical-align:middle}
+.full .notes{flex-direction:row;flex-wrap:wrap;gap:5px 18px;flex:none}
+.full .notes h4{width:100%}
+.full .note{width:calc(33.33% - 12px)}
+.tip{margin-top:auto;background:var(--teal-l);border-radius:10px;padding:10px 12px;font-size:10.3px;line-height:1.5;color:#0B5C66}
+.tip b{color:#06464E}
+
+.by{display:inline-flex;align-items:center;gap:6px;color:#475569;font-weight:600;font-size:9.5px}.by b{color:var(--navy);font-weight:800}.by a{color:var(--teal);text-decoration:none;font-weight:700;padding-left:7px;border-left:1px solid #CBD5E1}
+.wc{width:17px;height:17px;border-radius:5px;background:linear-gradient(135deg,#0B2545,#0FA3B1);color:#fff;font-size:7.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;letter-spacing:.3px;flex:none}
+.by.dk{color:#cfe0f1;font-size:11px}.by.dk b{color:#fff}.by.dk a{color:#5EEAD4;border-color:rgba(255,255,255,.3)}.by.dk .wc{width:22px;height:22px;font-size:9px}
+@media screen{#doc{zoom:var(--fit,1)}}
+/* ===== APP ===== */
+.app{display:flex;background:var(--bg);font-size:13px;overflow:hidden;position:relative}
+.side{width:224px;flex:none;background:linear-gradient(180deg,#0B2545 0%,#102D52 60%,#0E3A5C 100%);color:#c9d6e6;padding:16px 0;display:flex;flex-direction:column}
+.brand{display:flex;gap:10px;align-items:center;padding:0 16px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.lg{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#0FA3B1,#1D4E89);display:flex;align-items:center;justify-content:center;color:#fff;flex:none}
+.brand b{display:block;color:#fff;font-size:14.5px;letter-spacing:.4px}.brand small{font-size:10.5px;color:#8fb3d1}
+.sec{font-size:9.5px;letter-spacing:1.4px;color:#6f8fb0;font-weight:700;padding:14px 20px 5px}
+.mi{display:flex;align-items:center;gap:10px;padding:7.5px 18px;font-size:12.8px;color:#c9d6e6;border-left:3px solid transparent}
+.mi.on{background:rgba(15,163,177,.18);color:#fff;border-left-color:#0FA3B1;font-weight:600}
+.mi .cnt{margin-left:auto;background:#D64545;color:#fff;font-size:10px;border-radius:10px;padding:1px 7px;font-weight:700}
+.side .foot{margin-top:auto;padding:12px 18px 0;font-size:10.5px;color:#6f8fb0;border-top:1px solid rgba(255,255,255,.08)}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{height:58px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:16px;flex:none}
+.top h1{font-size:18px;font-weight:700;color:var(--navy);line-height:1.2}
+.crumb{font-size:11px;color:var(--mut)}
+.srch{margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 12px;width:240px;color:#94a3b8;font-size:12px}
+.tb-i{position:relative;color:#475569;display:flex}.tb-i em{position:absolute;top:-7px;right:-9px;background:#D64545;color:#fff;font-style:normal;font-size:9px;border-radius:8px;padding:0 5px;font-weight:700}
+.who{display:flex;align-items:center;gap:8px;font-size:12px;line-height:1.25}.who small{color:var(--mut);font-size:10.5px}
+.av{width:32px;height:32px;border-radius:50%;background:#1D4E89;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex:none}
+.content{flex:1;padding:16px 20px;display:flex;flex-direction:column;gap:13px;min-height:0;overflow:hidden}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px}
+.ch h3{font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px}
+.sub{font-size:11.5px;color:var(--mut);font-weight:400}
+.row{display:flex;gap:13px;min-height:0}.col{display:flex;flex-direction:column;gap:13px;min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 14px;position:relative;overflow:hidden}
+.kpi .l{font-size:11px;color:var(--mut);font-weight:600}.kpi .v{font-size:25px;font-weight:800;color:var(--navy);margin-top:3px;line-height:1.15}.kpi .s{font-size:10.5px;color:var(--mut)}
+.kpi:before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--k,#1D4E89)}
+.kpi .ic{position:absolute;right:12px;top:12px;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--kb,#E0ECFF);color:var(--k,#1D4E89)}
+table.t{width:100%;border-collapse:collapse;font-size:12px}
+.t th{background:#F1F5F9;color:#475569;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.t td{padding:6.5px 8px;border-bottom:1px solid #EEF2F7;white-space:nowrap}
+.t td.r,.t th.r{text-align:right}.t td.c,.t th.c{text-align:center}
+.t tr.tot td{font-weight:800;background:#F1F5F9;border-top:2px solid var(--navy);color:var(--navy)}
+.t tr.hl td{background:#FFF7F7}
+.t.pay td{padding:3.5px 5px;font-size:10.9px;line-height:1.2}.t.pay th{padding:6px 5px;font-size:9px}
+.t.sm{font-size:11.3px}.t.sm td{padding:5.5px 7px}.t.sm th{padding:6px 7px;font-size:9.5px}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:3px 9px;font-size:11px;font-weight:600;white-space:nowrap;line-height:1.3}
+.chip b{font-weight:800}
+.c-over{background:#7F1D1D;color:#fff}.c-red{background:#FDE2E2;color:#B42318}.c-org{background:#FFEBD9;color:#B54708}.c-amb{background:#FEF3C7;color:#92400E}.c-blue{background:#E0ECFF;color:#1D4ED8}.c-grn{background:#DCF5E7;color:#18794E}.c-grey{background:#EEF2F7;color:#475569}.c-teal{background:var(--teal-l);color:#0B7A85}.c-navy{background:var(--navy);color:#fff}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;border:1px solid #CBD5E1;background:#fff;color:var(--navy);white-space:nowrap}
+.btn.p{background:var(--navy);color:#fff;border-color:var(--navy)}.btn.t{background:var(--teal);color:#fff;border-color:var(--teal)}.btn.d{background:#D64545;color:#fff;border-color:#D64545}.btn.g{background:var(--grn);color:#fff;border-color:var(--grn)}.btn.sm{padding:3px 8px;font-size:10.5px;border-radius:6px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}.fg.c3{grid-template-columns:1fr 1fr 1fr}
+.f label{display:block;font-size:11px;font-weight:600;color:#475569;margin-bottom:4px}
+.f label em{color:#D64545;font-style:normal}
+.f .i{border:1px solid #CBD5E1;border-radius:8px;padding:7px 10px;font-size:12.5px;background:#fff;display:flex;align-items:center;justify-content:space-between;min-height:33px;gap:6px}
+.f .i.ro{background:#F1F5F9;color:#334155;border-style:dashed}
+.f .i.dd:after{content:'\25BE';color:#94a3b8;font-size:11px}
+.f .i.ph{color:#94a3b8}
+.f .h{font-size:10.5px;color:var(--mut);margin-top:3px}
+.f.s2{grid-column:span 2}.f.s3{grid-column:span 3}
+.up{border:1.5px dashed #94a3b8;border-radius:8px;padding:7px 10px;font-size:12px;color:#475569;display:flex;align-items:center;gap:8px;background:#F8FAFC;min-height:33px}
+.up.ok{border-color:#2E9E6A;background:#F0FBF5;color:#18794E}
+.seg{display:inline-flex;border:1px solid #CBD5E1;border-radius:8px;overflow:hidden;background:#fff}.seg span{padding:7px 11px;font-size:11.5px;border-right:1px solid #CBD5E1;white-space:nowrap}.seg span:last-child{border:0}.seg .on{background:var(--navy);color:#fff;font-weight:600}
+.pbar{height:6px;background:#E2E8F0;border-radius:4px;overflow:hidden;min-width:70px}.pbar i{display:block;height:100%;border-radius:4px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:12px}.tabs span{padding:8px 13px;font-size:12.5px;color:var(--mut);font-weight:600;border-bottom:2px solid transparent;display:flex;gap:6px;align-items:center}.tabs .on{color:var(--navy);border-bottom-color:var(--teal)}
+.muted{color:var(--mut)}.b{font-weight:700}.red{color:#B42318}.grn{color:#18794E}
+.alert{display:flex;align-items:center;gap:12px;border-radius:10px;padding:9px 14px;font-size:12.5px}
+.alert.red{background:#FEF2F2;border:1px solid #FECACA;color:#7F1D1D}
+.alert.amb{background:#FFFBEB;border:1px solid #FDE68A;color:#78350F}
+.alert.grn{background:#F0FBF5;border:1px solid #BBE7CF;color:#14532D}
+.alert.blu{background:#EFF6FF;border:1px solid #C7DBFF;color:#1E3A8A}
+.alert .btn{margin-left:auto}
+.nm{display:flex;align-items:center;gap:8px}.nm small{display:block;color:var(--mut);font-size:10.5px;font-weight:400}
+.ini{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;background:#1D4E89;flex:none}
+.flt{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{border:1px solid #CBD5E1;border-radius:20px;padding:4px 11px;font-size:11.5px;color:#334155;background:#fff;display:inline-flex;gap:5px;align-items:center}
+.pill.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:12px}.kv span{color:var(--mut)}.kv b{color:var(--ink);font-weight:600}
+.vc{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.vc .vh{display:flex;justify-content:space-between;align-items:center}
+.vc .vh b{font-size:13.5px;color:var(--navy)}
+.vc .cr{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;padding:4px 0;border-top:1px dashed #E5EAF1;gap:6px}
+.vc .cr span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vc .cr small{color:var(--mut);font-size:10px}
+.overlay{position:absolute;inset:0;background:rgba(11,37,69,.55);display:flex;align-items:center;justify-content:center}
+.modal{width:700px;background:#fff;border-radius:16px;box-shadow:0 30px 60px rgba(0,0,0,.35);overflow:hidden}
+.mh{background:linear-gradient(135deg,#0B2545,#1D4E89);color:#fff;padding:16px 22px;display:flex;align-items:center;gap:14px}
+.mh h3{font-size:17px}.mh p{font-size:11.5px;color:#b8cde4}
+.msec{padding:12px 22px;border-bottom:1px solid var(--line)}
+.msec h5{font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-bottom:7px;display:flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+.mrow{display:flex;align-items:center;gap:10px;font-size:12.3px;padding:5px 0}
+.mrow .x{margin-left:auto;display:flex;gap:8px;align-items:center}
+.tl{display:flex;flex-direction:column;gap:0;position:relative}
+.tli{display:flex;gap:12px;padding-bottom:12px;position:relative}
+.tli:before{content:'';position:absolute;left:9px;top:20px;bottom:0;width:2px;background:#E2E8F0}
+.tli:last-child:before{display:none}
+.tld{width:20px;height:20px;border-radius:50%;flex:none;border:4px solid #fff;box-shadow:0 0 0 2px var(--c,#1D4E89);background:var(--c,#1D4E89)}
+.perm td.c{font-size:13px}
+/* cover & doc pages */
+.cover{padding:0;background:linear-gradient(135deg,#071A33 0%,#0B2545 45%,#14466F 100%);color:#fff}
+.doc h3{font-size:14px;color:var(--navy);font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.doc p,.doc li{font-size:11px;line-height:1.55;color:#334155}
+.doc ul{padding-left:16px}
+.box{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff}
+.flow{display:flex;align-items:stretch;gap:0}
+.step{flex:1;background:#F8FAFC;border:1px solid var(--line);border-radius:12px;padding:11px 10px;position:relative;text-align:center}
+.step .sn{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.step b{display:block;font-size:11.2px;color:var(--navy);margin-bottom:3px}
+.step span{font-size:9.6px;color:var(--mut);line-height:1.4;display:block}
+.arr{width:18px;display:flex;align-items:center;justify-content:center;color:var(--teal);font-weight:800;flex:none}
+.fx{background:#0B2545;color:#fff;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:600;line-height:1.6}
+.fx em{font-style:normal;color:#5EEAD4}
+.ex td{font-size:10.5px}
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q{border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:10px;padding:9px 12px;background:#fff}
+.q>b{font-size:11.3px;color:var(--navy);display:block;margin-bottom:3px}
+.q p{font-size:10.4px;line-height:1.5;color:#475569}
+.q .ans{margin-top:5px;font-size:10px;color:#0B7A85;font-weight:600}
+</style>
+</head>
+<body>
+<div id="doc"></div>
+<script>
+/* ================= ICONS ================= */
+const IC={dash:'M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z',clock:'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2',
+ship:'M2 20c2 1 4 1 6 0s4-1 6 0 4 1 6 0M4 17l-1-5h18l-2 5M6 12V7h8l3 5M9 7V3h3v4',users:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+med:'M4 4h16v16H4zM12 8v8M8 12h8',signon:'M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3',signoff:'M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9',
+wallet:'M3 7h18v13H3zM3 7l3-4h12l3 4M16 13h2',payroll:'M4 2h16v20l-3-2-3 2-2-2-2 2-3-2-3 2zM8 7h8M8 11h8M8 15h5',chart:'M3 3v18h18M7 15l4-4 3 3 5-6',
+report:'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h8',settings:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19 12l2-1-1-3-2 .5-1.5-1.5.5-2-3-1-1 2h-2l-1-2-3 1 .5 2L6 8.5 4 8l-1 3 2 1v0l-2 1 1 3 2-.5 1.5 1.5-.5 2 3 1 1-2h2l1 2 3-1-.5-2 1.5-1.5 2 .5 1-3z',
+bell:'M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',search:'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3',
+upload:'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12',download:'M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3',
+anchor:'M12 22V8M5 12H2a10 10 0 0 0 20 0h-3M12 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',alert:'M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01',
+check:'M20 6L9 17l-5-5',plus:'M12 5v14M5 12h14',edit:'M11 4H4v16h16v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z',cal:'M3 4h18v18H3zM16 2v4M8 2v4M3 10h18',
+user:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',lock:'M5 11h14v11H5zM7 11V7a5 5 0 0 1 10 0v4',eye:'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
+extend:'M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5',file:'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6',filter:'M22 3H2l8 9.5V19l4 2v-8.5z',
+xls:'M4 2h11l5 5v15H4zM8 11l6 7M14 11l-6 7',rupee:'M6 3h12M6 8h12M14 21L6 13h3a5 5 0 0 0 0-10',free:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM17 11l2 2 4-4'};
+const ic=(n,s=16,sw=2)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"><path d="${IC[n]}"/></svg>`;
+
+/* ================= HELPERS ================= */
+const TODAY=new Date(2026,9,6);
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const D=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const fd=s=>{const d=typeof s==='string'?D(s):s;return String(d.getDate()).padStart(2,'0')+'-'+MON[d.getMonth()]+'-'+d.getFullYear()};
+const fs=s=>{const d=D(s);return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear()};
+const dd=(a,b)=>Math.round((D(b)-D(a))/864e5);
+const left=e=>Math.round((D(e)-TODAY)/864e5);
+const num=n=>Math.round(n).toLocaleString('en-IN');
+const inr=n=>'₹'+num(n);
+const mask=p=>p?p.slice(0,5)+'••••'+p.slice(9):'<span class="chip c-red" style="font-size:10px">PAN missing</span>';
+const ini=n=>n.split(' ').filter(Boolean).slice(0,2).map(x=>x[0]).join('');
+const COL=['#1D4E89','#0FA3B1','#7C3AED','#B45309','#0E7490','#BE185D','#15803D','#4338CA'];
+const av=n=>`<span class="ini" style="background:${COL[n.length%COL.length]}">${ini(n)}</span>`;
+const mk=n=>`<span class="mk">${n}</span>`;
+function chip(d){
+  if(d<0)return `<span class="chip c-over">${ic('alert',11,2.5)} OVERSTAY +${-d} days</span>`;
+  if(d===0)return `<span class="chip c-over">ENDS TODAY</span>`;
+  const c=d<=7?'c-red':d<=15?'c-org':d<=30?'c-amb':d<=60?'c-blue':'c-grn';
+  return `<span class="chip ${c}"><b>${d}</b> days left</span>`;
+}
+function medChip(e){const d=left(e);if(d<0)return `<span class="chip c-over">EXPIRED</span>`;if(d<=30)return `<span class="chip c-red">Expires in ${d} d</span>`;if(d<=60)return `<span class="chip c-amb">Valid · ${d} d</span>`;return `<span class="chip c-grn">${ic('check',11,3)} VALID</span>`}
+const taxLbl={'10':'TDS 10%','2':'TDS 2%','20':'TDS 20%','NIL':'In-Hand'};
+const taxChip=t=>`<span class="chip ${t==='NIL'?'c-grey':t==='20'?'c-red':t==='2'?'c-teal':'c-blue'}" style="font-size:10px">${taxLbl[t]}</span>`;
+const prog=(s,e)=>{const tot=dd(s,e),el=Math.max(0,Math.min(tot,dd(s,'2026-10-06')));const p=Math.round(el/tot*100);const l=left(e);const c=l<0?'#7F1D1D':l<=7?'#D64545':l<=15?'#EA7A2E':l<=30?'#E8A33D':'#2E9E6A';return `<div class="pbar"><i style="width:${Math.min(100,p)}%;background:${c}"></i></div>`};
+
+/* ================= DATA (sample, from client sheets) ================= */
+const V=[
+ {n:'AB 2000',t:'Accommodation Barge',f:'Domestic',s:'2026-04-01',e:'2027-03-31',no:'IMO 9xxxx01'},
+ {n:'AB 3000',t:'Accommodation Barge',f:'Domestic',s:'2026-06-01',e:'2026-11-30',no:'IMO 9xxxx02'},
+ {n:'Chandra Jupiter',t:'Offshore Supply Vessel',f:'International',s:'2026-05-15',e:'2027-01-14',no:'IMO 9xxxx03'},
+ {n:'Chandra Sun',t:'Offshore Supply Vessel',f:'Domestic',s:'2026-03-01',e:'2027-02-28',no:'IMO 9xxxx04'},
+ {n:'IVY',t:'DP Survey Vessel',f:'Domestic',s:'2026-01-01',e:'2026-12-31',no:'IMO 9xxxx05'},
+ {n:'Matsya',t:'Tug',f:'Domestic',s:'2026-05-27',e:'2026-12-31',no:'ON 3xxx06'},
+ {n:'Meera',t:'Crew Boat',f:'Domestic',s:'2026-04-15',e:'2026-10-31',no:'ON 3xxx07'},
+ {n:'Radha',t:'Crew Boat',f:'Domestic',s:'2026-04-15',e:'2027-04-14',no:'ON 3xxx08'},
+ {n:'Shambhu Sagar',t:'Tug',f:'Domestic',s:'2026-02-01',e:'2027-01-31',no:'ON 3xxx09'},
+ {n:'Titan 12',t:'Crane Barge',f:'International',s:'2026-07-01',e:'2027-06-30',no:'IMO 9xxxx10'},
+ {n:'Triton Energy',t:'Seabed Survey Vessel',f:'International',s:'2026-09-20',e:'2027-03-19',no:'IMO 9xxxx11'},
+ {n:'Varaha',t:'Tug',f:'Domestic',s:'2026-06-01',e:'2026-11-30',no:'ON 3xxx12'}];
+const C=[ // name, rank, vessel, pan, rate, basis, tax, start, end, medical expiry
+['Falguni Majumdar','Master','AB 2000','CAUPM0460L',120000,'PM','10','2026-07-01','2026-10-15','2027-01-20'],
+['Subrata Das','Chief Officer','AB 2000','ALUPD5844L',250000,'PM','10','2026-06-01','2026-11-30','2026-10-20'],
+['Mohit Kumar','AB','AB 2000','EHKPM9731H',40000,'PM','10','2026-08-01','2026-10-04','2027-02-10'],
+['Bidyut Sardar','2nd Engineer','AB 2000','BYAPS0360N',210000,'PM','10','2026-05-01','2026-12-31','2027-03-05'],
+['Navin Kumar Roy','Engine Driver','AB 2000','BQDPR3546J',55000,'PM','10','2026-07-15','2027-01-14','2026-12-28'],
+['Mohammad Saad Khan','OS','AB 2000','PSLPK3719L',10000,'PM','NIL','2026-09-01','2026-10-31','2027-04-02'],
+['Chandra Bhushan Prasad','Handler','AB 3000','AYSPP3603N',110000,'PM','10','2026-08-14','2026-10-13','2027-01-30'],
+['Ramvir Ram','2nd Engineer','AB 3000','AHRPR4631A',210000,'PM','10','2026-06-01','2026-11-30','2027-02-14'],
+['Anirudh Behera','3rd Engineer','AB 3000','BGPPB9354Q',55000,'PM','10','2026-06-08','2026-12-07','2026-11-02'],
+['Pradeep Kumar','AB','AB 3000','EEPPK8742Q',47000,'PM','10','2026-09-08','2026-11-07','2027-03-11'],
+['Bhagvan Das','Oiler','AB 3000','GREPD8662N',20000,'PM','10','2026-07-01','2026-09-30','2027-01-09'],
+['Rudhir Kumar','Oiler','AB 3000','FKQPK3964L',24000,'PM','10','2026-09-14','2026-12-13','2027-05-21'],
+['Rohit Kumar','Cook','AB 3000','HWQPK5526L',32000,'PM','2','2026-06-22','2026-12-21','2027-02-02'],
+['Vikas','OS','AB 3000','',11000,'PM','NIL','2026-08-01','2026-11-30','2027-01-15'],
+['Dhileswara Rao','AB','Chandra Jupiter','CESPD1853A',80000,'PM','10','2026-08-01','2027-01-31','2027-02-18'],
+['Dishant Singh Jamwal','2nd Engineer','Chandra Jupiter','BEDPJ2783P',250000,'PM','10','2026-07-01','2026-10-20','2027-01-11'],
+['Nitish Kumar','AB','Chandra Jupiter','JPJPK7036D',60000,'PM','10','2026-09-01','2026-12-31','2027-04-19'],
+['Man Singh Yadav','Cook','Chandra Jupiter','',60000,'PM','20','2026-06-05','2026-10-09','2026-12-01'],
+['Harpal Singh','Master','Chandra Sun','BAOPS0881G',480000,'PM','10','2026-08-01','2026-11-15','2027-02-25'],
+['Satyanarayana Lanka','Chief Officer','Chandra Sun','ACFPL7909L',250000,'PM','10','2026-06-06','2026-12-05','2027-01-03'],
+['Shailesh Kumar Pandey','2nd Engineer','Chandra Sun','GNBPK0635P',220000,'PM','10','2026-06-01','2026-10-26','2027-03-30'],
+['Pankaj Kumar','Chief Engineer','Chandra Sun','ATKPK4797K',380000,'PM','10','2026-09-01','2027-02-28','2027-06-12'],
+['Bhavikbhai Tandel','AB','Chandra Sun','AYEPT2713P',36000,'PM','10','2026-06-01','2026-12-31','2026-10-12'],
+['Dumu Suresh','IV Master','IVY','',70000,'PM','20','2026-06-01','2026-11-30','2027-01-17'],
+['Toji Alex','RO','IVY','',75000,'PM','NIL','2026-06-05','2026-10-18','2027-01-25'],
+['Nityanand Tiwari','Wiper','IVY','ASXPT0613P',11000,'PM','10','2026-06-01','2026-12-31','2027-01-07'],
+['Rahul Yadav','AB','IVY','',18000,'PM','NIL','2026-06-02','2026-10-29','2027-03-14'],
+['Vishal Kumar','Master','Matsya','CTVPK5689R',210000,'PM','2','2026-06-16','2026-12-15','2027-02-08'],
+['Bhupendra Singh','AB','Matsya','IJJPS6310F',18000,'PM','2','2026-05-27','2026-10-11','2027-01-19'],
+['Yashvir Kumar','Cook','Matsya','BEWPK8006H',20000,'PM','10','2026-05-27','2026-11-26','2026-10-30'],
+['Ramesh Patil','Master','Meera','',65000,'PM','NIL','2026-04-15','2026-10-31','2027-02-01'],
+['Sanjay Kumar','AB','Radha','INQPK2443N',35000,'PM','10','2026-07-10','2027-01-09','2027-03-01'],
+['Santosh Prajapati','AB','Shambhu Sagar','FMFPP4532L',45000,'PM','10','2026-08-20','2026-12-19','2027-02-20'],
+['Sourabh Kumar','AB','Titan 12','HYHPK2526R',45000,'PM','10','2026-07-01','2026-12-31','2027-03-03'],
+['Akash Atariya','GS','Titan 12','BAAPA4656B',45000,'PM','10','2026-09-15','2027-03-14','2027-04-10'],
+['Rohit Dubey','Master','Triton Energy','',7000,'PD','NIL','2026-09-20','2026-10-19','2027-01-01'],
+['Devendra Kumar','AB','Varaha','IVMPK7176L',50000,'PM','10','2026-06-01','2026-11-30','2027-01-25'],
+['Sujit Kumar Chauhan','Oiler','Varaha','CAOPC4323G',70000,'PM','10','2026-06-01','2026-10-24','2027-02-27']
+].map(a=>({n:a[0],r:a[1],v:a[2],pan:a[3],rate:a[4],b:a[5],tax:a[6],s:a[7],e:a[8],med:a[9],d:left(a[8])}));
+const A=[ // available crew pool
+['Ajit Kumar','IV Master','IVY','2026-06-05','2027-02-01'],['Deepak Jat','2nd Class Master','IVY','2026-09-12','2026-12-20'],
+['Vinay Eknath Naik','Oiler','AB 3000','2026-09-14','2027-01-22'],['Om Prakash Yadav','Cook','AB 3000','2026-09-14','2027-02-17'],
+['Pawan Singh','AB','AB 3000','2026-09-08','2026-12-09'],['Vijay Kumar','Chief Officer','Chandra Sun','2026-06-06','2027-01-28'],
+['Kadir Khan','3rd Engineer','Chandra Sun','2026-06-16','2026-10-25'],['Sarfaraz Khan','Cook','Chandra Jupiter','2026-06-05','2027-03-08'],
+['Suaib Khan','AB','IVY','2026-06-02','2026-11-15'],['Akshay','AB','IVY','2026-06-02','2026-10-03']
+].map(a=>({n:a[0],r:a[1],last:a[2],since:a[3],med:a[4]}));
+const sorted=[...C].sort((a,b)=>a.d-b.d);
+const OVER=C.filter(c=>c.d<0), SOON15=C.filter(c=>c.d>=0&&c.d<=15), SOON30=C.filter(c=>c.d>=0&&c.d<=30);
+const MEDSOON=[...C.map(c=>({n:c.n,r:c.r,v:c.v,med:c.med})),...A.map(a=>({n:a.n,r:a.r,v:'Available',med:a.med}))].filter(x=>left(x.med)<=30).sort((a,b)=>left(a.med)-left(b.med));
+
+/* Payroll : AB 3000 — September 2026 (30 days) */
+const PF_RATE=.12, LV_RATE=.036;
+const P=[
+['Chandra Bhushan Prasad','Handler','AYSPP3603N','2026-09-01','2026-09-30',110000,'10',13890,0,3300,0,0,''],
+['Ramvir Ram','2nd Engineer','AHRPR4631A','2026-09-01','2026-09-30',210000,'10',13890,0,0,25000,0,''],
+['Anirudh Behera','3rd Engineer','BGPPB9354Q','2026-09-01','2026-09-30',55000,'10',13890,0,5200,10000,0,''],
+['Pradeep Kumar','AB','EEPPK8742Q','2026-09-08','2026-09-30',47000,'10',7008,1,2845,0,0,'Signed on 08-Sep',6850],
+['Bhagvan Das','Oiler','GREPD8662N','2026-09-01','2026-09-30',20000,'10',7008,1,0,0,1500,''],
+['Vinay Eknath Naik','Oiler','BXNPN4302B','2026-09-01','2026-09-14',40000,'10',7008,1,2292,0,0,'Signed off 14-Sep'],
+['Rudhir Kumar','Oiler','FKQPK3964L','2026-09-14','2026-09-30',24000,'10',7008,1,0,0,0,'Signed on 14-Sep',5400],
+['Om Prakash Yadav','Cook','ABFPO7674J','2026-09-01','2026-09-14',57000,'10',7008,1,7235,0,0,'Signed off 14-Sep'],
+['Rohit Kumar','Cook','HWQPK5526L','2026-09-01','2026-09-30',32000,'2',7008,1,2290,0,0,''],
+['Pawan Singh','AB','DYTPS2908K','2026-09-01','2026-09-08',50000,'10',7008,1,8292,0,0,'Signed off 08-Sep'],
+['Vikas','OS','','2026-09-01','2026-09-30',11000,'NIL',7008,1,3540,0,0,'']
+].map(a=>{const days=dd(a[3],a[4])+1,md=30,earn=a[5]/md*days,t=a[6]==='NIL'?0:+a[6];
+ const pf=Math.round(PF_RATE*a[7]*days/md),lv=a[8]?Math.round(LV_RATE*a[7]*days/md):0,tds=earn*t/100;
+ return{n:a[0],r:a[1],pan:a[2],s:a[3],e:a[4],rate:a[5],tax:a[6],days,earn,tds,t10:t===10?tds:0,t2:t===2?tds:0,t20:t===20?tds:0,pf,lv,conv:a[9],adv:a[10],ded:a[11],rem:a[12],cb:a[13]||0,net:Math.round(earn-tds-pf-lv-a[10]-a[11]+a[9])}});
+const SUM=k=>P.reduce((s,x)=>s+x[k],0);
+
+/* ================= LAYOUT ================= */
+const SPLIT={w:1120,h:902,z:.723}, FULL={w:1400,h:700,z:.762};
+let PN=0;
+function page(no,title,sub,inner,cls=''){PN++;return `<section class="page"><header class="ph"><div class="ph-l"><span class="ph-no">${no}</span><div><h2>${title}</h2><p>${sub}</p></div></div><div class="ph-r"><b>BEACON CREWSUITE</b><br>Crew Contract &amp; Payroll System · Prototype v1.0</div></header><div class="pb ${cls}">${inner}</div><footer class="pf">${byline()}<span>Prepared for Beacon Marine Pvt. Ltd. · Sample data for illustration only · PAN / Aadhaar masked</span><span>Page ${PN}</span></footer></section>`}
+function byline(dark){return `<span class="by${dark?' dk':''}"><span class="wc">WC</span>Prepared by <b>WebControls Services</b><a href="https://webcontrols.in/" target="_blank" rel="noopener">webcontrols.in</a></span>`}
+const MENU=[['MAIN',[['dash','Dashboard','dash'],['count','Contract Countdown','clock',OVER.length+SOON15.length]]],
+['MASTERS',[['vessel','Vessel Master','ship'],['crew','Crew Master','users'],['med','Medical & Documents','med']]],
+['CREW OPERATIONS',[['signon','Sign-On / Contracts','signon'],['signoff','Sign-Off & Extension','signoff',OVER.length],['exp','Expenses & Advances','wallet']]],
+['PAYROLL',[['pay','Monthly Payroll','payroll'],['cost','Vessel Cost Sheet','chart']]],
+['REPORTS & ADMIN',[['rep','Reports Centre','report'],['set','Users & Settings','settings']]]];
+const logo=(s=22)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="${IC.anchor}"/></svg>`;
+function side(act){return `<aside class="side"><div class="brand"><div class="lg">${logo()}</div><div><b>BEACON MARINE</b><small>CrewSuite · Contracts &amp; Payroll</small></div></div>${MENU.map(([s,items])=>`<div class="sec">${s}</div>${items.map(([k,l,i,c])=>`<div class="mi ${k===act?'on':''}">${ic(i,16)}${l}${c?`<span class="cnt">${c}</span>`:''}</div>`).join('')}`).join('')}<div class="foot">v1.0 · Logged in as Admin<br>Last sync 06-Oct-2026 09:12</div></aside>`}
+function topbar(title,crumb,u=['OA','Operations Admin','Administrator']){return `<div class="top"><div><div class="crumb">${crumb}</div><h1>${title}</h1></div><div class="srch">${ic('search',14)} Search crew, vessel, PAN…</div><div class="tb-i">${ic('bell',19)}<em>${OVER.length+SOON15.length+MEDSOON.length}</em></div><div class="who"><span class="av">${u[0]}</span><div><b>${u[1]}</b><br><small>${u[2]}</small></div></div></div>`}
+function shot(url,inner,S){return `<div class="shot"><div class="bar"><i></i><i></i><i></i><span>https://crewsuite.beaconmarine.in/${url}</span></div><div class="app" style="zoom:${S.z};width:${S.w}px;height:${S.h}px">${inner}</div></div>`}
+function screen(act,url,title,crumb,body,S=SPLIT,extra=''){return shot(url,`${side(act)}<div class="main">${topbar(title,crumb)}<div class="content">${body}</div></div>${extra}`,S)}
+const notes=(items,tip)=>`<div class="notes"><h4>What this screen does</h4>${items.map((t,i)=>`<div class="note"><span class="n">${i+1}</span><div>${t}</div></div>`).join('')}${tip?`<div class="tip">${tip}</div>`:''}</div>`;
+const pages=[];
+
+/* ================= 1. COVER ================= */
+PN++;
+pages.push(`<section class="page cover"><div style="position:absolute;inset:0;overflow:hidden">
+<svg width="100%" height="100%" viewBox="0 0 1123 794" preserveAspectRatio="none" style="position:absolute;inset:0"><path d="M0 610 C200 570 380 650 560 610 S900 560 1123 600 V794 H0Z" fill="rgba(15,163,177,.18)"/><path d="M0 660 C220 620 420 700 620 655 S940 620 1123 650 V794 H0Z" fill="rgba(15,163,177,.25)"/><path d="M0 720 C240 690 460 750 680 715 S960 690 1123 712 V794 H0Z" fill="rgba(255,255,255,.08)"/>
+<g transform="translate(700,470)" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2.2"><path d="M0 140 L40 190 H330 L370 140 Z" fill="rgba(255,255,255,.08)"/><path d="M60 140 V90 H230 L275 140"/><path d="M110 90 V50 H170 V90"/><path d="M130 50 V20"/><path d="M40 160 H340" stroke-dasharray="6 7"/><rect x="80" y="104" width="20" height="16"/><rect x="115" y="104" width="20" height="16"/><rect x="150" y="104" width="20" height="16"/><rect x="185" y="104" width="20" height="16"/></g></svg></div>
+<div style="position:relative;padding:58px 64px;height:100%;display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:14px"><div class="lg" style="width:54px;height:54px;border-radius:14px">${logo(30)}</div><div><div style="font-size:22px;font-weight:800;letter-spacing:1.5px">BEACON MARINE PVT. LTD.</div><div style="font-size:12px;color:#9cc3e3;letter-spacing:.5px">Mumbai · Marine Crew Manning &amp; Ship Management</div></div></div>
+<div style="margin-top:70px;font-size:13px;letter-spacing:3px;color:#5EEAD4;font-weight:700">SOFTWARE PROTOTYPE · FOR APPROVAL</div>
+<div style="font-size:44px;font-weight:800;line-height:1.1;margin-top:10px;max-width:700px">Beacon CrewSuite</div>
+<div style="font-size:22px;font-weight:500;color:#cfe0f1;margin-top:8px">Crew Contract, Vessel Deployment &amp; Payroll Management System</div>
+<div style="font-size:13px;color:#a8c1db;margin-top:18px;max-width:600px;line-height:1.6">A secure, login-based web application that tracks every crew contract day by day, warns before contracts and medicals expire, and works out month-wise salary, TDS, PF, advances and expenses automatically, vessel by vessel.</div>
+<div style="display:flex;gap:26px;margin-top:34px">${[['16','Screens designed'],['12','Vessels (sample)'],['38','Crew on board (sample)'],['100%','Auto salary calculation']].map(x=>`<div><div style="font-size:26px;font-weight:800;color:#fff">${x[0]}</div><div style="font-size:10.5px;color:#9cc3e3;letter-spacing:.5px">${x[1]}</div></div>`).join('<div style="width:1px;background:rgba(255,255,255,.2)"></div>')}</div>
+<div style="margin-top:auto;display:flex;gap:40px;align-items:flex-end;font-size:11px;color:#a8c1db;line-height:1.6"><div><b style="color:#fff">Document</b><br>UI Prototype · Version 1.0</div><div><b style="color:#fff">Date</b><br>06 October 2026</div><div><b style="color:#fff">Technology</b><br>ASP.NET (C#) · SQL Server</div><div><b style="color:#fff">Status</b><br>Draft — for client review</div><div style="margin-left:auto;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 14px"><span class="wc" style="width:34px;height:34px;font-size:13px;border-radius:9px">WC</span><div style="line-height:1.45"><span style="font-size:10px;letter-spacing:1px;color:#9cc3e3">PREPARED BY</span><br><b style="color:#fff;font-size:13px">WebControls Services</b><br><a href="https://webcontrols.in/" target="_blank" rel="noopener" style="color:#5EEAD4;text-decoration:none;font-weight:600">https://webcontrols.in/</a></div></div></div>
+</div></section>`);
+
+/* ================= 2. OVERVIEW / MODULE MAP ================= */
+const mods=[['dash','Dashboard & Countdown','Contract days-left for every crew member, vessel by vessel. Pop-up alerts at login.','Dashboard / Vessel Dashboard'],
+['ship','Vessel Master','Vessels, flag (Domestic/International → PF rule), vessel contract period.','Vessel Master'],
+['users','Crew Master','Crew personal, KYC (Aadhaar / PAN), CDC, bank and payee details.','Employee Master'],
+['med','Medical & Documents','Medical fitness and other certificates with expiry tracking.','Employee Medical Master'],
+['signon','Sign-On / Contracts','Assign crew to a vessel, upload contract PDF, set salary and TDS.','Employee Contract Master'],
+['signoff','Sign-Off & Extension','Confirm the actual exit date, or extend the contract. Salary is calculated up to the last day on board.','New (recommended)'],
+['wallet','Expenses & Advances','Add-on expenses (conveyance, travel, medical), salary advances, deductions.','Employee Addon Expense / Salary Advance'],
+['payroll','Monthly Payroll','Auto-generated salary disbursement sheet per vessel per month.','Cost Sheet'],
+['chart','Vessel Cost Sheet','Month-wise vessel costing: crew count, salary, TDS, advances, net, expenses.','Vessel Dashboard'],
+['report','Reports Centre','Vessel, crew, TDS (client format), TDS consolidated, expiry and payroll reports in Excel/PDF.','Reports'],
+['settings','Users & Settings','User roles, payroll rules (TDS / PF %), alert days, audit log.','New (recommended)'],
+['lock','CA Portal (Bharat)','Read-only login for the tax consultant to download TDS reports.','Reports (TDS for Bharat)']];
+pages.push(page('01','Solution Overview','What the system covers, and how it maps to the sheets we discussed',`
+<div class="doc" style="flex:1.25;display:flex;flex-direction:column;gap:12px">
+ <div class="box"><h3>${ic('anchor',17)} The problem we are solving</h3>
+ <p>Beacon Marine places crew on many vessels on fixed-term contracts (30 days, 60 days, months, or day-rate). Today the contracts and salaries are kept in separate Excel sheets, so it is easy to <b>miss a contract end date</b>. When that happens the crew member stays on board, salary keeps running unnoticed, and the month-end salary and TDS sheets have to be built by hand for every vessel.</p></div>
+ <div class="box"><h3>${ic('check',17)} What CrewSuite delivers</h3>
+ <ul><li><b>Live countdown</b> of days left on every contract, vessel-wise, with colour alerts (60 / 30 / 15 / 7 days) and an <b>OVERSTAY</b> flag when a contract has ended but the crew is still on board.</li>
+ <li><b>Login pop-up</b> listing contracts and medical certificates that are about to expire, so nothing gets missed.</li>
+ <li><b>Sign-On → Sign-Off workflow</b>: salary runs from the actual join date to the actual exit date, and even a single extra day is paid and shown.</li>
+ <li><b>Automatic monthly payroll</b> per vessel, in the same columns as your current Excel: pro-rata salary, TDS 10% / 2% / 20%, PF, leave, conveyance, advance, net payment.</li>
+ <li><b>Available crew pool</b>: crew who have signed off show as free to assign to another vessel, with their medical status.</li>
+ <li><b>One-click reports</b>: TDS report for the CA, vessel cost sheets, and Excel downloads every month.</li></ul></div>
+ <div class="box" style="flex:1"><h3>${ic('lock',17)} User access</h3>
+ <p><b>Admin Panel</b> (this prototype): full access for Beacon office staff, with roles for Administrator, Operations (data entry), Accounts (payroll &amp; reports) and Management (view only).<br><b>CA Login (Bharat)</b>: a separate read-only login for Beacon’s tax consultant to view and download TDS reports.<br><b>User Panel</b> (“yet to decide” in the brief): we suggest a later phase with a read-only view for vessel in-charge / crew. See the last page.</p></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:5px" class="doc">
+ <h3>${ic('dash',17)} Module map <span class="sub">(your sheet name → screen name)</span></h3>
+ ${mods.map(m=>`<div style="display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:3px 10px"><div style="width:24px;height:24px;border-radius:8px;background:var(--teal-l);color:#0B7A85;display:flex;align-items:center;justify-content:center;flex:none">${ic(m[0],15)}</div><div style="flex:1;min-width:0"><b style="font-size:11.3px;color:var(--navy)">${m[1]}</b><div style="font-size:9.6px;color:var(--mut);line-height:1.25">${m[2]}</div></div><span class="chip ${m[3].startsWith('New')?'c-amb':'c-grey'}" style="font-size:9px">${m[3]}</span></div>`).join('')}
+</div>`));
+
+/* ================= 3. WORKFLOW + RULES ================= */
+const ex=[['Ajit Kumar · IVY · Jun-2026','₹1,15,000 ÷ 30 × 5 days','₹19,167','TDS 10% = ₹1,917','Short stay, part month'],
+['Pradeep Kumar · AB 3000 · Sep-2026','₹47,000 ÷ 30 × 23 days','₹36,033','TDS ₹3,603 · PF ₹645 · Leave ₹193','Mid-month sign-on'],
+['Man Singh Yadav · Chandra Jupiter · May-2026','₹60,000 × 50% ÷ 31 × 11 days','₹10,645','TDS 10% = ₹1,065','Half-salary period (rate revision)'],
+['Rohit Dubey · Matsya · Jun-2026','₹7,000 per day × 13 days','₹91,000','In-hand, no TDS','Day-rate contract'],
+['Bhagvan Das · AB 3000 · Oct-2026','₹20,000 ÷ 31 × 6 days','₹3,871','Paid for overstay till actual sign-off','Contract ended 30-Sep, left 06-Oct']];
+pages.push(page('02','How It Works — Crew Lifecycle & Salary Rules','From vessel set-up to final settlement: every step is recorded and every rupee is calculated',`
+<div class="doc" style="display:flex;flex-direction:column;gap:12px;flex:1">
+<div class="flow">${[['Vessel Set-up','Vessel, flag, vessel contract dates'],['Crew Registration','Personal, KYC, PAN, bank'],['Medical Upload','Fitness certificate & expiry'],['Sign-On','Contract PDF, dates, salary, TDS type'],['Daily Countdown','Alerts at 60/30/15/7 days & overstay'],['Monthly Entries','Advances, expenses, deductions'],['Auto Payroll','Pro-rata salary, TDS, PF, net'],['Sign-Off / Extend','Actual exit date → final pay → crew Available']].map((s,i,a)=>`<div class="step"><div class="sn" style="${i===4?'background:#D64545':i===7?'background:#0FA3B1':''}">${i+1}</div><b>${s[0]}</b><span>${s[1]}</span></div>${i<a.length-1?'<div class="arr">→</div>':''}`).join('')}</div>
+<div style="display:flex;gap:14px;flex:1;min-height:0">
+ <div class="box" style="flex:1"><h3>${ic('rupee',16)} Salary calculation rules (taken from your current Excel sheets)</h3>
+ <div class="fx">Earned Salary = <em>Monthly Salary ÷ Days in Month × Days on Board</em> &nbsp;(or Day Rate × Days)<br>
+ Net Payment = Earned Salary <em>− TDS − PF − Leave − Advance − Deductions + Add-on Expenses marked “In Salary”</em></div>
+ <ul style="margin-top:9px">
+ <li><b>Days on board</b> counted from the sign-on date to the sign-off date, both days included (as in your sheets, e.g. 14.06 is counted for both outgoing and incoming crew).</li>
+ <li><b>TDS</b> per contract: 10% (professional), 2% (contractor / commission), 20% automatically when PAN is missing, or “In-Hand” (no TDS). TDS is calculated on earned salary only.</li>
+ <li><b>PF 12% + Leave 3.6%</b> of the crew’s PF basic, applied automatically only on <b>Domestic</b> vessels (vessel flag rule from your brief).</li>
+ <li><b>Add-on expenses</b> (conveyance / travel / medical) are not taxed. For <b>each entry</b> the office decides: <b>add to salary payout</b>, or <b>company-borne</b> (e.g. travel to the vessel paid directly), which then shows only in the vessel cost. Advances and deductions are recovered in the month they are given.</li>
+ <li><b>Overstay</b>: if a contract has ended but sign-off is not yet confirmed, salary keeps accruing and is flagged in red until the office confirms the exit.</li>
+ <li>A contract can have a <b>salary revision</b> part-way (e.g. 50% salary period, then full salary); each period is calculated separately.</li></ul></div>
+ <div class="box" style="flex:1.05"><h3>${ic('check',16)} Worked examples — system output matches your sheets</h3>
+ <table class="t sm ex"><thead><tr><th>Crew · Vessel · Month</th><th>Calculation</th><th class="r">Earned</th><th>Deductions</th></tr></thead><tbody>
+ ${ex.map(e=>`<tr><td><b>${e[0]}</b><br><span class="muted" style="font-size:9.5px">${e[4]}</span></td><td>${e[1]}</td><td class="r b">${e[2]}</td><td style="white-space:normal;font-size:9.8px">${e[3]}</td></tr>`).join('')}</tbody></table>
+ <div class="alert grn" style="margin-top:10px;font-size:10.5px">${ic('check',15)} The figures above were checked against your June-2026 salary disbursement sheets (IVY, AB 3000, Chandra Jupiter, Matsya). The system follows the same logic, with no manual formulas.</div></div>
+</div></div>`));
+
+/* ================= 4. LOGIN ================= */
+const loginApp=`<div style="display:flex;width:100%;height:100%">
+<div style="flex:1.1;background:linear-gradient(150deg,#071A33,#0B2545 50%,#14466F);color:#fff;padding:60px 56px;position:relative;overflow:hidden">
+<svg viewBox="0 0 600 900" style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none"><path d="M0 690 C150 650 300 720 450 680 S600 660 600 660 V900 H0Z" fill="rgba(15,163,177,.22)"/><path d="M0 750 C160 720 320 780 480 740 S600 730 600 730 V900 H0Z" fill="rgba(255,255,255,.07)"/>
+<g transform="translate(150,520)" fill="none" stroke="rgba(255,255,255,.5)" stroke-width="2.5"><path d="M0 130 L35 175 H290 L325 130 Z" fill="rgba(255,255,255,.07)"/><path d="M50 130 V82 H205 L245 130"/><path d="M95 82 V45 H150 V82"/><path d="M115 45 V15"/><rect x="70" y="95" width="18" height="15"/><rect x="102" y="95" width="18" height="15"/><rect x="134" y="95" width="18" height="15"/><rect x="166" y="95" width="18" height="15"/></g></svg>
+<div style="position:relative"><div style="display:flex;gap:12px;align-items:center"><div class="lg" style="width:48px;height:48px">${logo(26)}</div><div><b style="font-size:19px;letter-spacing:1px">BEACON MARINE</b><div style="font-size:12px;color:#9cc3e3">CrewSuite</div></div></div>
+<div style="font-size:34px;font-weight:800;line-height:1.15;margin-top:90px">Every contract.<br>Every day on board.<br><span style="color:#5EEAD4">Every rupee accounted for.</span></div>
+<div style="font-size:14px;color:#b8cde4;margin-top:18px;line-height:1.6;max-width:420px">Crew contract tracking, expiry alerts and automatic month-wise payroll for all Beacon Marine vessels.</div></div></div>
+<div style="flex:1;display:flex;align-items:center;justify-content:center;background:#F3F6FA">
+<div style="width:390px;background:#fff;border-radius:16px;padding:34px 34px 28px;box-shadow:0 20px 50px rgba(11,37,69,.12);border:1px solid var(--line)">
+<div style="font-size:22px;font-weight:800;color:var(--navy)">Sign in ${mk(1)}</div><div class="muted" style="font-size:12.5px;margin:4px 0 22px">Use your Beacon office user ID</div>
+<div class="f" style="margin-bottom:14px"><label>User ID</label><div class="i">ops.admin ${ic('user',15)}</div></div>
+<div class="f" style="margin-bottom:10px"><label>Password</label><div class="i">•••••••••• ${ic('eye',15)}</div></div>
+<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:20px"><span>☐ Remember this device</span><span style="color:var(--teal);font-weight:600">Forgot password?</span></div>
+<div class="btn p" style="width:100%;justify-content:center;padding:11px;font-size:14px">${ic('lock',15)} Sign In Securely</div>
+<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:var(--mut);line-height:1.6">${mk(2)} Role-based access · Session timeout after 30 min idle · Every add/edit is audit-logged</div>
+</div></div></div>`;
+pages.push(page('S-01','Login Screen','Secure login for Beacon office users',shot('login',loginApp,SPLIT)+notes([
+'<b>Secure sign-in</b> with user ID and password. Passwords are stored encrypted, and there is a forgot-password option by email.',
+'<b>Role-based access</b>: Administrator, Operations, Accounts, Management (view-only) and <b>CA (Bharat)</b> each see only their own menus.',
+'Right after login the <b>Alert Pop-up</b> (next page) appears with contracts and medicals that are expiring.'],
+'<b>Look &amp; feel:</b> navy-and-teal maritime theme in Beacon Marine colours, so the system feels like your own product. The logo can be replaced with your official logo.')));
+
+/* ================= 5. LOGIN POPUP ================= */
+const kpiRow=(cols)=>`<div class="kpis" style="grid-template-columns:repeat(${cols.length},1fr)">${cols.map(k=>`<div class="kpi" style="--k:${k[3]};--kb:${k[4]}"><div class="ic">${ic(k[5],16)}</div><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('')}</div>`;
+const K=[['Active Vessels',V.length,'All under contract','#1D4E89','#E0ECFF','ship'],['Crew On Board',C.length,'Across all vessels','#0FA3B1','#E3F6F7','users'],['Available Crew',A.length,'Free to assign','#2E9E6A','#DCF5E7','free'],['Expiring ≤ 15 days',SOON15.length,'Plan relief now','#EA7A2E','#FFEBD9','clock'],['OVERSTAY',OVER.length,'Contract ended, still on board','#B42318','#FDE2E2','alert'],['Medical ≤ 30 days',MEDSOON.length,'Renewal needed','#7C3AED','#EDE7FE','med']];
+const popup=`<div class="overlay"><div class="modal">
+<div class="mh"><div class="lg" style="width:42px;height:42px;background:rgba(255,255,255,.12)">${ic('bell',22)}</div><div><h3>Good morning — ${OVER.length+SOON15.length+MEDSOON.length} items need attention today ${mk(1)}</h3><p>Tuesday, 06 October 2026 · Auto-generated at login</p></div></div>
+<div class="msec"><h5 style="color:#7F1D1D"><span class="dot" style="background:#7F1D1D"></span>Overstay — contract ended, crew still on board ${mk(2)}</h5>
+${OVER.map(c=>`<div class="mrow">${av(c.n)}<div><b>${c.n}</b> <span class="muted">· ${c.r} · ${c.v}</span><br><span class="muted" style="font-size:11px">Contract ended ${fd(c.e)} · salary still accruing</span></div><div class="x">${chip(c.d)}<span class="btn d sm">Confirm Sign-Off</span><span class="btn sm">Extend</span></div></div>`).join('')}</div>
+<div class="msec"><h5 style="color:#B54708"><span class="dot" style="background:#EA7A2E"></span>Contracts expiring in the next 15 days (${SOON15.length})</h5>
+${SOON15.sort((a,b)=>a.d-b.d).slice(0,5).map(c=>`<div class="mrow" style="padding:3px 0">${av(c.n)}<div><b>${c.n}</b> <span class="muted">· ${c.r} · ${c.v} · ends ${fd(c.e)}</span></div><div class="x">${chip(c.d)}</div></div>`).join('')}
+<div style="font-size:11.5px;color:var(--teal);font-weight:600;margin-top:2px">+ ${SOON15.length-5} more → View Countdown Board</div></div>
+<div class="msec"><h5 style="color:#6D28D9"><span class="dot" style="background:#7C3AED"></span>Medical certificates expiring / expired ${mk(3)}</h5>
+${MEDSOON.slice(0,4).map(c=>`<div class="mrow" style="padding:3px 0">${av(c.n)}<div><b>${c.n}</b> <span class="muted">· ${c.r} · ${c.v} · valid till ${fd(c.med)}</span></div><div class="x">${medChip(c.med)}</div></div>`).join('')}</div>
+<div style="padding:12px 22px;display:flex;align-items:center;gap:10px;background:#F8FAFC"><span style="font-size:12px" class="muted">☐ Don’t show again today</span><span class="btn" style="margin-left:auto">Open Countdown Board</span><span class="btn p">${ic('check',14)} Acknowledge</span></div>
+</div></div>`;
+pages.push(page('S-02','Login Alert Pop-up','Shown automatically every time a user logs in (as asked in the “Dashboard” sheet)',
+screen('dash','dashboard','Dashboard','Home',kpiRow(K.slice(0,4))+`<div class="card" style="flex:1"></div>`,SPLIT,popup)+notes([
+'<b>Pops up automatically on login</b>. Nobody has to remember to check: the system brings the expiring contracts and medicals to the user.',
+'<b>Overstay</b> crew (contract ended but still on board) appear first in dark red, with one-click <b>Confirm Sign-Off</b> or <b>Extend</b>.',
+'<b>Medical expiry</b> warnings so crew are not left on board, or sent on board, with an expired medical certificate.'],
+'<b>Optional:</b> the same alert list can also be emailed every morning to the operations team (and sent on WhatsApp in a later phase).')));
+
+/* ================= 6. MAIN DASHBOARD ================= */
+const dashBody=kpiRow(K)+`
+<div class="alert red">${ic('alert',18)}<div><b>${OVER.length} crew members are past their contract end date and still on board.</b> Salary is still accruing: ${OVER.map(c=>`${c.n} (${c.v}, +${-c.d} d)`).join(', ')}. ${mk(2)}</div><span class="btn d sm">Review Sign-Offs</span></div>
+<div class="row" style="flex:1">
+<div class="card" style="flex:1.75;min-width:0;padding-bottom:6px"><div class="ch"><h3>${ic('clock',17)} Contract Countdown — ending soonest ${mk(1)}</h3><div class="flt"><span class="pill">All Vessels ▾</span><span class="pill on">≤ 30 days</span><span class="pill">≤ 60 days</span><span class="pill">All</span></div></div>
+<table class="t sm"><thead><tr><th>Crew</th><th>Vessel</th><th>Contract End</th><th style="width:90px">Progress</th><th>Days Left</th><th class="c">Action</th></tr></thead><tbody>
+${sorted.slice(0,9).map(c=>`<tr class="${c.d<0?'hl':''}"><td><div class="nm">${av(c.n)}<div><b>${c.n}</b><small>${c.r}</small></div></div></td><td>${c.v}</td><td><b>${fd(c.e)}</b></td><td>${prog(c.s,c.e)}</td><td>${chip(c.d)}</td><td class="c">${c.d<0?'<span class="btn d sm">Sign-Off</span>':'<span class="btn sm">Extend</span>'}</td></tr>`).join('')}
+</tbody></table></div>
+<div class="col" style="flex:1">
+<div class="card" style="flex:1.2;padding-bottom:4px"><div class="ch"><h3>${ic('free',17)} Available Crew Pool ${mk(3)}</h3><span class="sub">${A.length} free</span></div>
+<table class="t sm"><tbody>${A.slice(0,4).map(a=>`<tr><td><div class="nm">${av(a.n)}<div><b>${a.n}</b><small>${a.r} · last: ${a.last}</small></div></div></td><td><span class="muted" style="font-size:10.5px">free ${dd(a.since,'2026-10-06')} d</span></td><td class="r">${left(a.med)<0?'<span class="chip c-over" style="font-size:10px">Medical expired</span>':'<span class="btn t sm">Assign</span>'}</td></tr>`).join('')}</tbody></table></div>
+<div class="card" style="flex:1;padding-bottom:4px"><div class="ch"><h3>${ic('med',17)} Medical Expiry ${mk(4)}</h3><span class="sub">next 30 days</span></div>
+<table class="t sm"><tbody>${MEDSOON.slice(0,4).map(m=>`<tr><td><b>${m.n}</b><br><span class="muted" style="font-size:10.5px">${m.v} · ${fd(m.med)}</span></td><td class="r">${medChip(m.med)}</td></tr>`).join('')}</tbody></table></div>
+</div></div>`;
+pages.push(page('S-03','Main Dashboard','The first screen after login: who is ending, who is overstaying, who is free, and whose medical is due',
+screen('dash','dashboard','Dashboard','Home › Overview',dashBody,FULL)+notes([
+'<b>Contract Countdown</b>: every crew member’s contract sorted by the days left, with colour codes: <span class="chip c-red">≤ 7</span> <span class="chip c-org">≤ 15</span> <span class="chip c-amb">≤ 30</span> <span class="chip c-blue">≤ 60</span> <span class="chip c-grn">60+</span>.',
+'<b>Overstay banner</b>: if a contract end date has passed and sign-off is not confirmed, a red banner stays on the dashboard until someone acts.',
+'<b>Available Crew Pool</b>: crew who have signed off and are free, with how long they have been free. One click on <b>Assign</b> opens Sign-On for another vessel.',
+'<b>Medical Expiry</b> list. Crew with an expired medical are blocked from being assigned to a vessel.',
+'<b>Top tiles</b> give management a one-glance status of the whole fleet. Clicking a tile opens the detailed list.',
+'All figures update live from the data entered, so there are no manual formulas.'],''),'full'));
+
+/* ================= 7. VESSEL-WISE COUNTDOWN BOARD ================= */
+const vcards=V.map(v=>{const cr=C.filter(c=>c.v===v.n).sort((a,b)=>a.d-b.d);const vl=left(v.e);const worst=cr.length?cr[0].d:999;
+const bc=worst<0?'#7F1D1D':worst<=7?'#D64545':worst<=15?'#EA7A2E':worst<=30?'#E8A33D':'#2E9E6A';
+return `<div class="vc" style="border-top:4px solid ${bc}"><div class="vh"><b>${ic('ship',14)} ${v.n}</b><span class="chip ${v.f==='Domestic'?'c-teal':'c-blue'}" style="font-size:9.5px">${v.f}</span></div>
+<div style="display:flex;justify-content:space-between;font-size:10.5px" class="muted"><span>${cr.length} crew on board</span><span>Vessel contract: ${vl} d left</span></div>
+${cr.slice(0,3).map(c=>`<div class="cr"><span><b>${c.n}</b> <small>${c.r}</small></span>${chip(c.d)}</div>`).join('')}${cr.length>3?`<div style="font-size:10.5px;color:var(--teal);font-weight:600">+ ${cr.length-3} more crew →</div>`:''}</div>`}).join('');
+pages.push(page('S-04','Contract Countdown Board (Vessel-wise)','The clearest view of “how many days left”: one card per vessel, crew sorted by urgency',
+screen('count','countdown','Contract Countdown — Vessel-wise','Home › Contract Countdown',`
+<div class="flt"><span class="pill on">All Vessels</span><span class="pill">Domestic</span><span class="pill">International</span><span style="width:16px"></span><span class="pill">${ic('filter',12)} Only ≤ 15 days</span><span class="pill">Only Overstay</span>${mk(1)}<span style="margin-left:auto;display:flex;gap:6px;align-items:center;font-size:11px" class="muted">Legend: <span class="chip c-over">Overstay</span><span class="chip c-red">≤ 7</span><span class="chip c-org">≤ 15</span><span class="chip c-amb">≤ 30</span><span class="chip c-blue">≤ 60</span><span class="chip c-grn">60+</span></span></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,1fr);gap:11px;flex:1;min-height:0;position:relative">${vcards}<span class="mk" style="position:absolute;left:-8px;top:-8px">2</span></div>`,FULL)+notes([
+'<b>Filters</b> for Domestic / International vessels, only urgent (≤ 15 days), or only overstay cases.',
+'<b>One card per vessel</b>. The coloured top border shows the most urgent crew on that vessel, so a red card means “act on this vessel today”.',
+'Each card shows <b>crew count</b> and how many days are left on the <b>vessel’s own contract</b> with the charterer. Clicking a card opens the Vessel Cost Sheet.'],''),'full'));
+
+/* ================= 8. VESSEL MASTER ================= */
+pages.push(page('S-05','Vessel Master','Add and manage vessels, flag type and vessel contract period',
+screen('vessel','masters/vessels','Vessel Master','Masters › Vessels',`
+<div class="card"><div class="ch"><h3>${ic('plus',16)} Add / Edit Vessel ${mk(1)}</h3><span class="sub">Fields marked * are mandatory</span></div>
+<div class="fg c3"><div class="f"><label>Vessel Name <em>*</em></label><div class="i">AB 3000</div></div>
+<div class="f"><label>IMO / Official Number</label><div class="i">IMO 9xxxx02</div></div>
+<div class="f"><label>Vessel Type</label><div class="i dd">Accommodation Barge</div></div>
+<div class="f"><label>Vessel Flag <em>*</em> ${mk(2)}</label><div class="seg"><span class="on">Domestic</span><span>International</span></div><div class="h">Domestic → PF 12% auto-applied to crew salary</div></div>
+<div class="f"><label>Vessel Contract Start <em>*</em></label><div class="i">01-Jun-2026 ${ic('cal',14)}</div></div>
+<div class="f"><label>Vessel Contract End <em>*</em></label><div class="i">30-Nov-2026 ${ic('cal',14)}</div><div class="h">Duration: 183 days · <b class="grn">55 days left</b></div></div>
+<div class="f"><label>Charterer / Client</label><div class="i ph">Enter charterer name</div></div>
+<div class="f"><label>Vessel Contract Document</label><div class="up ok">${ic('file',15)} AB3000_Charter_2026.pdf</div></div>
+<div class="f"><label>Status</label><div class="seg"><span class="on">Active</span><span>Inactive</span></div></div></div>
+<div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end"><span class="btn">Cancel</span><span class="btn p">${ic('check',14)} Save Vessel</span></div></div>
+<div class="card" style="flex:1;padding-bottom:4px"><div class="ch"><h3>${ic('ship',16)} All Vessels ${mk(3)}</h3><div class="flt"><span class="pill">Search…</span><span class="btn sm">${ic('xls',12)} Excel</span></div></div>
+<table class="t sm"><thead><tr><th>Vessel</th><th>Type</th><th>Flag</th><th>Contract Period</th><th>Contract Left</th><th class="c">Crew</th><th class="c">PF</th><th class="c">Action</th></tr></thead><tbody>
+${V.slice(0,10).map(v=>`<tr><td><b>${v.n}</b></td><td>${v.t}</td><td><span class="chip ${v.f==='Domestic'?'c-teal':'c-blue'}" style="font-size:10px">${v.f}</span></td><td>${fd(v.s)} → ${fd(v.e)}</td><td>${chip(left(v.e))}</td><td class="c b">${C.filter(c=>c.v===v.n).length}</td><td class="c">${v.f==='Domestic'?'<span class="grn b">12%</span>':'<span class="muted">—</span>'}</td><td class="c"><span class="btn sm">${ic('edit',11)}</span></td></tr>`).join('')}
+</tbody></table></div>`)+notes([
+'<b>Simple vessel form</b>: name, IMO / official number, type, charterer and vessel contract document.',
+'<b>Vessel Flag rule</b>: if <b>Domestic</b>, PF @ 12% is applied automatically to the salary of every crew member on that vessel. International vessels have no PF.',
+'<b>Vessel list</b> showing days left on each vessel’s own contract and the number of crew currently on board.'],
+'<b>Validation:</b> a crew contract cannot be created beyond the vessel’s contract end date without a warning.')));
+
+/* ================= 9. CREW MASTER ================= */
+pages.push(page('S-06','Crew Master (Employee Master)','Complete crew profile with KYC, identity documents and bank details',
+screen('crew','masters/crew','Crew Master','Masters › Crew › Add New',`
+<div class="row" style="flex:1">
+<div class="card" style="flex:1.45"><div class="ch"><h3>${ic('user',16)} Crew Details</h3><span class="chip c-grn">Status: Available</span></div>
+<div class="tabs"><span class="on">Personal ${mk(1)}</span><span>KYC Documents</span><span>Bank & Payee</span><span>Assignment History</span></div>
+<div class="fg"><div class="f"><label>Full Name <em>*</em></label><div class="i">Pradeep Kumar</div></div>
+<div class="f"><label>Designation / Rank <em>*</em></label><div class="i dd">AB (Able Seaman)</div></div>
+<div class="f"><label>Mobile No. <em>*</em></label><div class="i">+91 98XXX XXX42</div></div>
+<div class="f"><label>Email ID</label><div class="i">pradeep.k@email.com</div></div>
+<div class="f"><label>Date of Birth</label><div class="i">12-Mar-1991 ${ic('cal',14)}</div><div class="h">Age: 35 years</div></div>
+<div class="f"><label>CDC No. / INDoS No. ${mk(2)}</label><div class="i">MUM 12XXXX / 15XXXX78</div></div>
+<div class="f s2"><label>Address</label><div class="i">Village & P.O. …, District …, Uttar Pradesh – 2XXXXX</div></div>
+</div>
+<div style="font-size:12px;font-weight:700;color:var(--navy);margin:14px 0 8px;display:flex;gap:8px;align-items:center">${ic('lock',14)} KYC ${mk(3)}</div>
+<div class="fg"><div class="f"><label>Aadhaar Number <em>*</em></label><div class="i">XXXX XXXX 4821</div></div>
+<div class="f"><label>Aadhaar Upload</label><div class="up ok">${ic('check',14)} aadhaar_pradeep.pdf</div></div>
+<div class="f"><label>PAN Number</label><div class="i">EEPPK••••Q <span class="chip c-grn" style="font-size:10px">Format OK</span></div></div>
+<div class="f"><label>PAN Upload</label><div class="up ok">${ic('check',14)} pan_pradeep.jpg</div></div>
+<div class="f"><label>PAN–Aadhaar Linked?</label><div class="seg"><span class="on">Yes</span><span>No</span><span>Not checked</span></div></div>
+<div class="f"><label>Default TDS ${mk(4)}</label><div class="i ro">TDS 10% (PAN available)</div><div class="h">No PAN → 20% applied automatically</div></div>
+</div>
+<div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end"><span class="btn">Cancel</span><span class="btn p">${ic('check',14)} Save Crew</span></div></div>
+<div class="card" style="flex:1;padding-bottom:4px"><div class="ch"><h3>${ic('users',16)} Crew List ${mk(5)}</h3><span class="btn t sm">${ic('plus',12)} New</span></div>
+<div class="flt" style="margin-bottom:8px"><span class="pill on">All (${C.length+A.length})</span><span class="pill">On Board (${C.length})</span><span class="pill">Available (${A.length})</span></div>
+<table class="t sm"><thead><tr><th>Crew</th><th>PAN</th><th>Status</th></tr></thead><tbody>
+${[...C.slice(6,13),...A.slice(0,6)].map(x=>`<tr><td><div class="nm">${av(x.n)}<div><b>${x.n}</b><small>${x.r}</small></div></div></td><td style="font-size:10.5px">${x.pan!==undefined?mask(x.pan):'<span class="muted">on file</span>'}</td><td>${x.v?`<span class="chip c-blue" style="font-size:10px">On ${x.v}</span>`:'<span class="chip c-grn" style="font-size:10px">Available</span>'}</td></tr>`).join('')}
+</tbody></table></div></div>`)+notes([
+'<b>Tabbed crew profile</b>: Personal, KYC Documents, Bank &amp; Payee, and Assignment History (every vessel the crew member has served on).',
+'<b>Maritime IDs</b>: CDC and INDoS numbers are recorded with each crew member (recommended addition).',
+'<b>KYC</b>: Aadhaar &amp; PAN number with document upload and PAN–Aadhaar link status. Aadhaar is shown masked for privacy.',
+'<b>TDS logic</b> is suggested from the PAN: PAN missing → 20%. It can be changed per contract.',
+'<b>Crew list</b> with live status <b>On Board (vessel)</b> or <b>Available</b>, so it is always clear who is free.'],
+'<b>Bank &amp; Payee tab</b> (not shown): bank, A/c no., IFSC, and an <b>alternate payee</b> when salary is paid to a family member (as seen in your Chandra Sun sheet).')));
+
+/* ================= 10. MEDICAL ================= */
+pages.push(page('S-07','Medical & Documents','Medical fitness certificates and other crew documents with expiry tracking',
+screen('med','masters/medical','Medical & Documents','Masters › Medical Certificates',`
+<div class="row"><div class="card" style="flex:1"><div class="ch"><h3>${ic('med',16)} Upload Medical Certificate ${mk(1)}</h3></div>
+<div class="fg c3"><div class="f"><label>Crew Name <em>*</em></label><div class="i dd">Subrata Das (Chief Officer)</div></div>
+<div class="f"><label>Certificate Type <em>*</em></label><div class="i dd">Medical Fitness (DG Approved)</div></div>
+<div class="f"><label>Issued By (Doctor / Clinic)</label><div class="i">Dr. …, DG Approved Medical Examiner</div></div>
+<div class="f"><label>Certificate Start Date <em>*</em></label><div class="i">20-Oct-2026 ${ic('cal',14)}</div></div>
+<div class="f"><label>Certificate End Date <em>*</em></label><div class="i">19-Oct-2028 ${ic('cal',14)}</div><div class="h">Validity: 2 years</div></div>
+<div class="f"><label>Upload Certificate <em>*</em></label><div class="up ok">${ic('upload',14)} medical_subrata_2026.pdf</div></div></div>
+<div class="alert amb" style="margin-top:12px;font-size:12px">${ic('alert',16)} Current certificate of <b>Subrata Das</b> expires on <b>20-Oct-2026</b> (14 days), while his contract on AB 2000 runs till <b>30-Nov-2026</b>. ${mk(2)}<span class="btn p sm">${ic('check',12)} Save &amp; Replace Old</span></div></div></div>
+<div class="row">${[['Valid',C.length+A.length-MEDSOON.length,'#2E9E6A'],['Expiring ≤ 30 days',MEDSOON.filter(m=>left(m.med)>=0).length,'#D64545'],['Expired',MEDSOON.filter(m=>left(m.med)<0).length,'#7F1D1D'],['Other documents expiring (COC / STCW)',3,'#7C3AED']].map(k=>`<div class="kpi" style="flex:1;--k:${k[2]}"><div class="l">${k[0]}</div><div class="v">${k[1]}</div></div>`).join('')}</div>
+<div class="card" style="flex:1;padding-bottom:4px"><div class="ch"><h3>Medical Register ${mk(3)}</h3><div class="flt"><span class="pill on">Expiring first</span><span class="pill">All</span><span class="btn sm">${ic('xls',12)} Excel</span></div></div>
+<table class="t sm"><thead><tr><th>Crew</th><th>Rank</th><th>Current Vessel</th><th>Valid From</th><th>Valid Till</th><th>Status</th><th>Covers Contract?</th><th class="c">File</th></tr></thead><tbody>
+${[...MEDSOON,...C.slice(14,20).map(c=>({n:c.n,r:c.r,v:c.v,med:c.med}))].slice(0,11).map(m=>{const c=C.find(x=>x.n===m.n);const cov=c?D(m.med)>=D(c.e):true;return `<tr><td><b>${m.n}</b></td><td>${m.r}</td><td>${m.v}</td><td>${fd(new Date(D(m.med).getFullYear()-1,D(m.med).getMonth(),D(m.med).getDate()+1))}</td><td>${fd(m.med)}</td><td>${medChip(m.med)}</td><td>${c?(cov?'<span class="grn b">✓ Yes</span>':'<span class="red b">✗ No — renew</span>'):'<span class="muted">—</span>'}</td><td class="c">${ic('file',14)}</td></tr>`}).join('')}
+</tbody></table></div>`)+notes([
+'<b>Upload a certificate</b> with start/end dates. The newest one replaces the old one, and history is kept.',
+'<b>Smart warning</b>: the system checks whether the medical is valid for the <b>whole contract period</b>, not only for today.',
+'<b>Medical Register</b> sorted with the most urgent on top, plus a “Covers Contract?” check for every crew member on board.'],
+'<b>Also supports</b> other certificates (COC, STCW, CDC validity, passport) with the same expiry alerts, so all crew compliance is in one place.')));
+
+/* ================= 11. SIGN-ON / CONTRACT ================= */
+pages.push(page('S-08','Sign-On — Contract Assignment','Assign a crew member to a vessel: contract PDF, dates, salary and TDS (the “Employee Contract Master” sheet)',
+screen('signon','contracts/new','New Contract / Sign-On','Crew Operations › Sign-On',`
+<div class="card"><div class="ch"><h3>${ic('signon',16)} Contract Assignment</h3><span class="chip c-teal">Contract No. BM/AB3000/2026/0147 (auto)</span></div>
+<div class="fg c3">
+<div class="f"><label>Select Vessel <em>*</em> ${mk(1)}</label><div class="i dd">AB 3000</div><div class="h">Domestic · Vessel contract till 30-Nov-2026 · PF applies</div></div>
+<div class="f"><label>Select Crew <em>*</em></label><div class="i dd">Pradeep Kumar — AB</div><div class="h">Only <b>Available</b> crew are listed</div></div>
+<div class="f"><label>Rank on this Vessel</label><div class="i dd">AB</div></div>
+<div class="f"><label>Medical Certificate (read-only) ${mk(2)}</label><div class="i ro">12-Mar-2026 to 11-Mar-2027 <span class="chip c-grn" style="font-size:10px">${ic('check',10,3)} VALID</span></div></div>
+<div class="f"><label>Contract Start (Sign-On) <em>*</em></label><div class="i">08-Sep-2026 ${ic('cal',14)}</div></div>
+<div class="f"><label>Contract End <em>*</em> ${mk(3)}</label><div class="i">07-Nov-2026 ${ic('cal',14)}</div><div class="h">Quick: <b>30 d</b> · <b style="color:var(--teal)">60 d</b> · 90 d · 6 months → <b>Duration 61 days</b></div></div>
+<div class="f"><label>Salary Basis</label><div class="seg"><span class="on">Per Month</span><span>Per Day</span></div></div>
+<div class="f"><label>Fixed Salary per Month (₹) <em>*</em></label><div class="i">47,000</div><div class="h">Per-day equivalent: ₹1,567 (30-day month)</div></div>
+<div class="f"><label>TDS / Payment Type <em>*</em> ${mk(4)}</label><div class="seg"><span class="on">TDS 10%</span><span>TDS 2%</span><span>20%</span><span>In-Hand</span></div></div>
+<div class="f"><label>PF Basic (₹)</label><div class="i">7,008</div><div class="h">PF 12% = ₹841 / month · Leave 3.6% = ₹252</div></div>
+<div class="f"><label>Upload Signed Contract (PDF) <em>*</em></label><div class="up ok">${ic('check',14)} Contract_PradeepKumar_AB3000.pdf</div></div>
+<div class="f"><label>Remarks</label><div class="i ph">e.g. relieving Pawan Singh</div></div></div>
+<div style="display:flex;gap:10px;margin-top:12px;align-items:center"><div class="alert blu" style="padding:6px 12px;font-size:11.5px;flex:1">${ic('rupee',15)} Estimated salary for this contract: <b>Sep ₹36,033 (23 d) · Oct ₹47,000 · Nov ₹10,967 (7 d)</b> = <b>₹94,000</b></div><span class="btn">Cancel</span><span class="btn p">${ic('check',14)} Submit &amp; Sign-On</span></div></div>
+<div class="card" style="flex:1;padding-bottom:4px"><div class="ch"><h3>Active Contracts ${mk(5)}</h3><div class="flt"><span class="pill">AB 3000 ▾</span><span class="btn sm">${ic('xls',12)} Excel</span></div></div>
+<table class="t sm"><thead><tr><th>Crew</th><th>End Date</th><th>Days Left</th><th class="r">Salary / Month</th><th>TDS</th><th class="c">PDF</th><th class="c">Actions</th></tr></thead><tbody>
+${C.filter(c=>c.v==='AB 3000').sort((a,b)=>a.d-b.d).slice(0,6).map(c=>`<tr class="${c.d<0?'hl':''}"><td><b>${c.n}</b> <span class="muted">${c.r}</span></td><td>${fd(c.e)}</td><td>${chip(c.d)}</td><td class="r b">${inr(c.rate)}</td><td>${taxChip(c.tax)}</td><td class="c">${ic('file',14)}</td><td class="c"><span class="btn sm">${ic("edit",11)}</span> <span class="btn sm">Extend</span> <span class="btn d sm">Sign-Off</span></td></tr>`).join('')}
+</tbody></table></div>`)+notes([
+'<b>Vessel &amp; crew dropdowns</b>: only <b>Available</b> crew are shown, so the same person cannot be put on two vessels at once.',
+'<b>Medical status (read-only)</b> is pulled in automatically. Sign-On is <b>blocked</b> if the medical is expired.',
+'<b>Contract duration</b>: pick dates or use the quick 30 / 60 / 90-day buttons. Day-rate contracts are also supported.',
+'<b>TDS type per contract</b>: 10%, 2%, 20% (no PAN) or In-Hand. The <b>estimated salary</b> for the whole contract is shown before submitting.',
+'<b>Contracts list</b> (the “EDIT” row in your sheet) with Edit, Extend and Sign-Off actions, plus days left.'],
+'Every change to a contract (dates or salary) is saved with <b>who changed it and when</b>, in the audit trail.')));
+
+/* ================= 12. SIGN-OFF & EXTENSION ================= */
+const bd=C.find(c=>c.n==='Bhagvan Das');const oD=6,oEarn=20000/31*oD,oT=oEarn*.1,oPF=Math.round(.12*7008*oD/31),oLv=Math.round(.036*7008*oD/31);
+pages.push(page('S-09','Sign-Off & Contract Extension','Confirm the crew member’s actual exit from the vessel, or extend the contract. Salary is calculated to the exact day.',
+screen('signoff','contracts/signoff','Sign-Off & Extension','Crew Operations › Sign-Off',`
+<div class="card" style="padding-bottom:4px"><div class="ch"><h3>${ic('alert',16)} Pending Sign-Off Queue ${mk(1)}</h3><span class="sub">Contracts ended or ending in 7 days</span></div>
+<table class="t sm"><thead><tr><th>Crew</th><th>Vessel</th><th>Contract End</th><th>Status</th><th class="c">Action</th></tr></thead><tbody>
+${sorted.filter(c=>c.d<=7).map(c=>`<tr class="${c.d<0?'hl':''}"><td><b>${c.n}</b> <span class="muted">${c.r}</span></td><td>${c.v}</td><td>${fd(c.e)}</td><td>${chip(c.d)}</td><td class="c"><span class="btn d sm">Confirm Sign-Off</span> <span class="btn sm">Extend</span></td></tr>`).join('')}
+</tbody></table></div>
+<div class="row" style="flex:1">
+<div class="card" style="flex:1.15"><div class="ch"><h3>${ic('signoff',16)} Confirm Sign-Off — Bhagvan Das ${mk(2)}</h3><span class="chip c-over">OVERSTAY +6 days</span></div>
+<div class="kv" style="margin-bottom:12px"><span>Vessel</span><b>AB 3000 (Domestic)</b><span>Contract</span><b>01-Jul-2026 → 30-Sep-2026 (92 days)</b><span>Salary</span><b>₹20,000 / month · TDS 10%</b></div>
+<div class="fg"><div class="f"><label>Actual Sign-Off Date <em>*</em></label><div class="i">06-Oct-2026 ${ic('cal',14)}</div><div class="h">6 days after contract end</div></div>
+<div class="f"><label>Sign-Off Port</label><div class="i">Mumbai</div></div>
+<div class="f"><label>Reason <em>*</em></label><div class="i dd">Contract completed — relief joined late</div></div>
+<div class="f"><label>Pay overstay days?</label><div class="seg"><span class="on">Yes, pay 6 days</span><span>No</span></div></div>
+<div class="f s2"><label>Upload Sign-Off / Release Document</label><div class="up">${ic('upload',14)} Drag &amp; drop or browse (optional)</div></div></div>
+<div style="margin-top:12px;border:1px solid var(--line);border-radius:10px;overflow:hidden"><div style="background:#F1F5F9;padding:7px 12px;font-size:11px;font-weight:700;color:#475569">FINAL SETTLEMENT PREVIEW — OCTOBER 2026 ${mk(3)}</div>
+<table class="t sm"><tbody><tr><td>Earned: ₹20,000 ÷ 31 × 6 days (01–06 Oct)</td><td class="r b">${inr(oEarn)}</td></tr><tr><td>TDS 10%</td><td class="r red">− ${inr(oT)}</td></tr><tr><td>PF 12% + Leave 3.6% (Domestic)</td><td class="r red">− ${inr(oPF+oLv)}</td></tr><tr><td>Advance outstanding</td><td class="r">₹0</td></tr><tr class="tot"><td>Net payable for October</td><td class="r">${inr(oEarn-oT-oPF-oLv)}</td></tr></tbody></table></div>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px"><span class="btn">Cancel</span><span class="btn d">${ic('check',14)} Confirm Sign-Off</span></div></div>
+<div class="card" style="flex:1"><div class="ch"><h3>${ic('extend',16)} Extend Contract ${mk(4)}</h3></div>
+<div class="kv" style="margin-bottom:12px"><span>Crew</span><b>Chandra Bhushan Prasad — Handler</b><span>Vessel</span><b>AB 3000</b><span>Current End</span><b>13-Oct-2026 ${chip(7)}</b></div>
+<div class="fg"><div class="f"><label>Extend by</label><div class="seg"><span>30 d</span><span class="on">60 d</span><span>90 d</span><span>Custom</span></div></div>
+<div class="f"><label>New End Date <em>*</em></label><div class="i">12-Dec-2026 ${ic('cal',14)}</div></div>
+<div class="f"><label>Revised Salary (optional)</label><div class="i">1,10,000</div><div class="h">From date: 14-Oct-2026</div></div>
+<div class="f"><label>Upload Extension Letter</label><div class="up">${ic('upload',14)} Browse</div></div></div>
+<div class="alert amb" style="margin-top:12px;font-size:11.5px">${ic('alert',15)} New end date (12-Dec) is <b>after the vessel contract end (30-Nov-2026)</b>. Please confirm the vessel contract is being extended.</div>
+<div class="alert grn" style="margin-top:8px;font-size:11.5px">${ic('check',15)} Medical valid till 30-Jan-2027: covers the extension.</div>
+<div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><span class="btn">Cancel</span><span class="btn t">${ic('extend',14)} Save Extension</span></div></div></div>`)+notes([
+'<b>Sign-Off Queue</b>: every contract that has ended (overstay) or ends within 7 days, in one place.',
+'<b>Confirm the actual exit date</b>. Salary is paid up to this exact date, so even 1 extra day on board is calculated and shown.',
+'<b>Final settlement preview</b> is shown before confirming: earned salary, TDS, PF, advance recovery and net payable.',
+'<b>Extend Contract</b> with a new end date, an optional salary revision and an extension letter, with validations against the vessel contract and medical.'],
+'After sign-off, the crew member <b>automatically moves to the Available Crew Pool</b> and can be assigned to another vessel.')));
+
+/* ================= 13. EXPENSES & ADVANCES ================= */
+const LED=[['05-Oct-2026','Chandra Bhushan Prasad','AB 3000','Add-on Expense','Conveyance — Mumbai port',3300,'Y'],['02-Oct-2026','Bhupendra Singh','Matsya','Salary Advance','Family emergency',10000],['28-Sep-2026','Bhagvan Das','AB 3000','Deduction','PPE / safety shoes recovery',1500],['24-Sep-2026','Anirudh Behera','AB 3000','Add-on Expense','Travel — joining ticket',5200,'Y'],['22-Sep-2026','Rudhir Kumar','AB 3000','Add-on Expense','Travel to vessel',5400,'N'],['19-Sep-2026','Dumu Suresh','IVY','Salary Advance','Salary advance',20000],['14-Sep-2026','Om Prakash Yadav','AB 3000','Add-on Expense','Travel — sign-off ticket',7235,'Y'],['12-Sep-2026','Ramvir Ram','AB 3000','Salary Advance','Salary advance',25000],['10-Sep-2026','Anirudh Behera','AB 3000','Salary Advance','Salary advance',10000],['08-Sep-2026','Pawan Singh','AB 3000','Add-on Expense','Medical / conveyance',8292,'Y'],['03-Sep-2026','Toji Alex','IVY','Add-on Expense','Conveyance',4946,'Y']];
+const tc={'Add-on Expense':'c-teal','Salary Advance':'c-amb','Deduction':'c-red'};
+pages.push(page('S-10','Expenses, Advances & Deductions','Add-on expenses (in salary or company-borne, decided per entry), salary advances and deductions, recorded crew-wise',
+screen('exp','transactions','Expenses & Advances','Crew Operations › Expenses & Advances',`
+<div class="row">
+${[['wallet','Add-on Expense',1,'c-teal',[['Select Crew *','Chandra Bhushan Prasad','dd'],['Vessel (auto-filled)','AB 3000','ro'],['Expense Type *','Conveyance','dd'],['Amount (₹) *','3,300',''],['Expense Date *','05-Oct-2026',''],['SEG']],'Not taxed'],
+['rupee','Salary Advance',2,'c-amb',[['Select Crew *','Bhupendra Singh','dd'],['Vessel (auto-filled)','Matsya','ro'],['Date of Advance *','02-Oct-2026',''],['Description','Family emergency',''],['Amount (₹) *','10,000','']],'Recovered from Oct salary'],
+['alert','Deduction',3,'c-red',[['Select Crew *','Bhagvan Das','dd'],['Vessel (auto-filled)','AB 3000','ro'],['Deduction Type *','PPE / Uniform recovery','dd'],['Deduction Date *','28-Sep-2026',''],['Amount (₹) *','1,500','']],'Deducted in Sep payroll']].map(f=>`<div class="card" style="flex:1"><div class="ch"><h3>${ic(f[0],16)} ${f[1]} ${mk(f[2])}</h3></div><div style="display:flex;flex-direction:column;gap:7px">${f[4].map(x=>x[0]==='SEG'?`<div class="f"><label>Include in Salary? <em>*</em> ${mk(5)}</label><div class="seg" style="display:flex"><span class="on" style="flex:1;text-align:center">Yes — add to salary</span><span style="flex:1;text-align:center">No — company-borne</span></div></div>`:`<div class="f"><label>${x[0].replace('*','<em>*</em>')}</label><div class="i ${x[2]}">${x[1]}</div></div>`).join('')}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span class="chip ${f[3]}" style="font-size:10px">${f[5]}</span><span class="btn p sm">${ic('check',12)} Submit</span></div></div>`).join('')}
+</div>
+<div class="card" style="flex:1;padding-bottom:4px"><div class="ch"><h3>Transaction Ledger ${mk(4)}</h3><div class="flt"><span class="pill on">All</span><span class="pill">Expenses</span><span class="pill">Advances</span><span class="pill">Deductions</span><span class="pill">Oct-2026 ▾</span></div></div>
+<table class="t sm"><thead><tr><th>Date</th><th>Crew</th><th>Vessel</th><th>Type</th><th>Description</th><th class="r">Amount</th><th>In Salary?</th><th>Month</th></tr></thead><tbody>
+${LED.slice(0,7).map(l=>`<tr><td>${l[0]}</td><td><b>${l[1]}</b></td><td>${l[2]}</td><td><span class="chip ${tc[l[3]]}" style="font-size:10px">${l[3]}</span></td><td>${l[4]}</td><td class="r b">${inr(l[5])}</td><td>${l[6]==='Y'?'<span class="chip c-grn" style="font-size:10px">Yes</span>':l[6]==='N'?'<span class="chip c-org" style="font-size:10px">No — company</span>':'<span class="muted">—</span>'}</td><td>${l[6]==='N'?'<span class="muted">Cost only</span>':l[0].slice(3)}</td></tr>`).join('')}
+</tbody></table></div>`)+notes([
+'<b>Add-on Expense</b> (conveyance, travel, medical): recorded crew-wise, vessel auto-filled, <b>not taxed</b>. Always shown in the vessel cost sheet.',
+'<b>Salary Advance</b>: recorded with its date. It is recovered automatically in that month’s payroll (instalments possible).',
+'<b>Deductions</b> (new, from your sheet): PPE / uniform recovery, damages, etc., deducted from salary.',
+'<b>One ledger</b> of all transactions, filtered by type and month, showing the payroll month each entry goes into.','<b>Include in Salary? (per entry)</b>: <b>Yes</b> adds the amount to that month’s salary payout. <b>No</b> means the company paid it directly (e.g. travel to the vessel), so it counts in vessel cost only.'],
+'Once a month’s payroll is <b>approved &amp; locked</b>, entries for that month can no longer be edited without Admin approval.')));
+
+/* ================= 14. MONTHLY PAYROLL ================= */
+pages.push(page('S-11','Monthly Payroll — Salary Disbursement Sheet','Auto-generated every month for each vessel, in the same columns as your current Excel sheet',
+screen('pay','payroll/AB3000/2026-09','Salary Disbursement Sheet — AB 3000 — September 2026','Payroll › Monthly Payroll',`
+<div class="flt"><span class="pill">Vessel: <b>AB 3000</b> ▾</span><span class="pill">Month: <b>September 2026</b> ▾</span><span class="chip c-teal">Domestic · PF applicable</span><span class="chip c-grey">30 days in month</span>${mk(1)}<span style="margin-left:auto;display:flex;gap:8px"><span class="btn">${ic('extend',13)} Recalculate</span><span class="btn">${ic('xls',13)} Export Excel</span><span class="btn">${ic('download',13)} PDF</span><span class="btn g">${ic('lock',13)} Approve &amp; Lock</span></span></div>
+<div class="card" style="flex:1;padding:0;overflow:hidden">
+<table class="t sm pay"><thead><tr><th>SN</th><th>Name / Rank</th><th>PAN No.</th><th>Period ${mk(2)}</th><th class="c">Days</th><th class="r">Rate/Month</th><th class="r">Total Salary</th><th class="r">TDS 10%</th><th class="r">TDS 2%</th><th class="r">TDS 20%</th><th class="r">PF</th><th class="r">Leave</th><th class="r">Conv.</th><th class="r">Advance</th><th class="r">Deduct.</th><th class="r">Net Pay ${mk(3)}</th></tr></thead><tbody>
+${P.map((p,i)=>`<tr><td>${i+1}</td><td><b>${p.n}</b><br><span class="muted" style="font-size:10px">${p.r}${p.rem?' · <span style="color:#0B7A85">'+p.rem+'</span>':''}</span></td><td style="font-size:10.5px">${p.pan?p.pan.slice(0,5)+'••••'+p.pan.slice(9):'<span class="muted">In-hand</span>'}</td><td>${fs(p.s).slice(0,5)} – ${fs(p.e).slice(0,5)}</td><td class="c b">${p.days}</td><td class="r">${num(p.rate)}</td><td class="r b">${num(p.earn)}</td><td class="r">${p.t10?num(p.t10):''}</td><td class="r">${p.t2?num(p.t2):''}</td><td class="r">${p.t20?num(p.t20):''}</td><td class="r">${num(p.pf)}</td><td class="r">${p.lv?num(p.lv):''}</td><td class="r">${p.conv?num(p.conv):''}</td><td class="r red">${p.adv?num(p.adv):''}</td><td class="r red">${p.ded?num(p.ded):''}</td><td class="r b" style="color:var(--navy)">${num(p.net)}</td></tr>`).join('')}
+<tr class="tot"><td></td><td colspan="4">TOTAL — ${P.length} crew</td><td></td><td class="r">${num(SUM('earn'))}</td><td class="r">${num(SUM('t10'))}</td><td class="r">${num(SUM('t2'))}</td><td class="r">${num(SUM('t20'))}</td><td class="r">${num(SUM('pf'))}</td><td class="r">${num(SUM('lv'))}</td><td class="r">${num(SUM('conv'))}</td><td class="r">${num(SUM('adv'))}</td><td class="r">${num(SUM('ded'))}</td><td class="r">${num(SUM('net'))}</td><td></td></tr>
+</tbody></table>
+<div style="display:flex;gap:12px;padding:8px 14px;border-top:1px solid var(--line)">${[['Gross Salary',SUM('earn')],['Total TDS',SUM('tds')],['PF + Leave',SUM('pf')+SUM('lv')],['Advances Recovered',SUM('adv')],['Conveyance / Expenses',SUM('conv')],['NET PAYABLE',SUM('net')]].map((k,i)=>`<div style="flex:1;border-radius:10px;padding:8px 12px;${i===5?'background:var(--navy);color:#fff':'background:#F8FAFC;border:1px solid var(--line)'}"><div style="font-size:10.5px;${i===5?'color:#9cc3e3':'color:var(--mut)'};font-weight:600">${k[0]}</div><div style="font-size:18px;font-weight:800">${inr(k[1])}</div></div>`).join('')}<div style="display:flex;align-items:center">${mk(4)}</div></div>
+</div>`,FULL)+notes([
+'<b>Select vessel + month</b>: the sheet is generated automatically from contracts, sign-on/sign-off dates, advances and expenses. Nothing is typed in by hand.',
+'<b>Period &amp; days</b> are worked out from the actual sign-on / sign-off dates. Crew who joined or left mid-month are pro-rated (e.g. Pradeep Kumar 23 days).',
+'<b>Net Payment</b> = Total − TDS − PF − Leave − Advance − Deductions + Conv. (same formula as your Excel). <b>Conv.</b> includes only add-on expenses marked <b>“In Salary”</b>; company-borne expenses are excluded.',
+'<b>Approve &amp; Lock</b> freezes the month. Export to <b>Excel</b> in the same format you use today, or to a <b>PDF</b> for signatures.'],''),'full'));
+
+/* ================= 15. VESSEL COST SHEET ================= */
+const months=[['Jun',735400],['Jul',702900],['Aug',748200],['Sep',SUM('earn')],['Oct*',236100]];
+const mx=Math.max(...months.map(m=>m[1]));
+const barSvg=`<svg viewBox="0 0 360 170" width="100%" height="170">${months.map((m,i)=>{const h=m[1]/mx*120,x=20+i*68;return `<rect x="${x}" y="${140-h}" width="40" height="${h}" rx="5" fill="${i===3?'#0B2545':i===4?'#9DB4CF':'#5B8BC0'}"/><text x="${x+20}" y="${134-h}" font-size="10" text-anchor="middle" fill="#334155" font-weight="700">${(m[1]/100000).toFixed(2)}L</text><text x="${x+20}" y="157" font-size="11" text-anchor="middle" fill="#64748B">${m[0]}</text>`}).join('')}<line x1="10" y1="140" x2="350" y2="140" stroke="#CBD5E1"/></svg>`;
+const pr=P.find(p=>p.n==='Pradeep Kumar');
+pages.push(page('S-12','Vessel Cost Sheet (Vessel Dashboard)','Vessel-wise costing for any month: crew count, salary, TDS, advances, net and additional expenses',
+screen('cost','vessels/AB3000/cost','Vessel Cost Sheet','Payroll › Vessel Cost Sheet',`
+<div class="card" style="padding:11px 15px"><div class="fg" style="grid-template-columns:1.1fr 1.4fr 2fr 1.1fr auto;align-items:end">
+<div class="f"><label>Select Vessel ${mk(1)}</label><div class="i dd">AB 3000</div></div>
+<div class="f"><label>Vessel Contract (read-only)</label><div class="i ro">01-Jun-2026 to 30-Nov-2026</div></div>
+<div class="f"><label>Contract Month</label><div class="seg"><span>Jun</span><span>Jul</span><span>Aug</span><span class="on">Sep</span><span>Oct</span><span>Nov</span></div></div>
+<div class="f"><label>Crew</label><div class="i dd">ALL</div></div>
+<span class="btn p">${ic('chart',14)} Show Costing</span></div></div>
+<div class="kpis" style="grid-template-columns:repeat(6,1fr)">${[['Crew Count',P.length,'8 full month · 3 part','#1D4E89'],['Total Salary',inr(SUM('earn')),'Earned, pro-rata','#0FA3B1'],['Total TDS',inr(SUM('tds')),'10% / 2% on salary','#7C3AED'],['Advances',inr(SUM('adv')),'Recovered this month','#E8A33D'],['NET Salary',inr(SUM('earn')-SUM('tds')-SUM('adv')),'Salary − TDS − Advance','#0B2545'],['Additional Expense',inr(SUM('conv')+SUM('cb')),`In salary ${inr(SUM('conv'))} · Company-borne ${inr(SUM('cb'))}`,'#2E9E6A']].map(k=>`<div class="kpi" style="--k:${k[3]}"><div class="l">${k[0]}</div><div class="v" style="font-size:20px">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('')}</div>
+<div class="row" style="flex:1">
+<div class="card" style="flex:1.5;padding-bottom:4px;min-width:0"><div class="ch"><h3>Crew-wise Breakdown — Sep 2026 ${mk(2)}</h3><span class="btn sm">${ic('xls',12)} Excel</span></div>
+<table class="t sm"><thead><tr><th>Crew</th><th class="c">Days</th><th class="r">Salary</th><th class="r">TDS</th><th class="r">Advance</th><th class="r">Net</th><th class="r">Add. Exp.</th></tr></thead><tbody>
+${P.slice(0,10).map(p=>`<tr class="${p.n==='Pradeep Kumar'?'hl':''}"><td><b>${p.n}</b></td><td class="c">${p.days}</td><td class="r">${num(p.earn)}</td><td class="r">${num(p.tds)}</td><td class="r">${p.adv?num(p.adv):'—'}</td><td class="r b">${num(p.earn-p.tds-p.adv)}</td><td class="r">${p.conv+p.cb?num(p.conv+p.cb)+(p.cb?'<sup style="color:#B54708">CB</sup>':''):'—'}</td></tr>`).join('')}
+</tbody></table></div>
+<div class="col" style="flex:1">
+<div class="card"><div class="ch"><h3>Monthly Vessel Cost ${mk(3)}</h3><span class="sub">Gross salary, ₹ lakh</span></div>${barSvg}<div style="font-size:10px" class="muted">* October: running month, till 06-Oct</div></div>
+<div class="card" style="flex:1"><div class="ch"><h3>Detailed View — Pradeep Kumar ${mk(4)}</h3></div>
+<div class="kv"><span>Salary Sep month</span><b>${inr(pr.earn)} (23 days)</b><span>TDS for Sep month</span><b>${inr(pr.tds)}</b><span>Advances</span><b>₹0</b><span>Additional Expense</span><b>${inr(pr.conv)}</b><span>PF + Leave</span><b>${inr(pr.pf+pr.lv)}</b><span>Net Payment</span><b style="color:var(--navy)">${inr(pr.net)}</b></div></div>
+</div></div>`)+notes([
+'<b>Select Vessel → Month → Crew (All or one)</b>, as in your “Vessel Dashboard” sheet. The vessel contract is shown read-only and the months are generated from it.',
+'<b>Crew-wise breakdown</b>: Salary, TDS, Advance, Net (Salary − TDS − Advance) and Additional Expense shown separately. <b>CB</b> = company-borne expense (not paid through salary).',
+'<b>Month-on-month vessel cost chart</b>, useful for billing the charterer and for management review.',
+'<b>Detailed view</b> for one crew member: salary, TDS, advances and expenses for the selected month.'],
+'Totals here always match the Monthly Payroll and TDS reports, because all three come from the same data.')));
+
+/* ================= 16. CREW PROFILE / LEDGER ================= */
+const cb=P.find(p=>p.n==='Chandra Bhushan Prasad');
+const led=[['Jun 2026','AB 3000','01.06 – 14.06',14,51333,5133,778,3300,0,48722],['Jul 2026','— Available —','',0,0,0,0,0,0,0],['Aug 2026','AB 3000','14.08 – 31.08',18,63871,6387,968,0,0,56516],['Sep 2026','AB 3000','01.09 – 30.09',30,cb.earn,cb.tds,cb.pf,cb.conv,0,cb.net],['Oct 2026*','AB 3000','01.10 – 06.10',6,21290,2129,323,0,0,18838]];
+pages.push(page('S-13','Crew Profile & Salary Ledger','Complete history of one crew member: vessels served, contracts, documents and month-wise salary',
+screen('crew','crew/chandra-bhushan-prasad','Chandra Bhushan Prasad','Masters › Crew › Profile',`
+<div class="card" style="display:flex;align-items:center;gap:16px"><span class="ini" style="width:56px;height:56px;font-size:19px;background:#0FA3B1">CB</span>
+<div style="flex:1"><div style="font-size:18px;font-weight:800;color:var(--navy)">Chandra Bhushan Prasad</div><div class="muted" style="font-size:12px">Handler · PAN AYSPP••••N · Mobile +91 9XXXX XXX10 · TDS 10%</div></div>
+<div style="display:flex;gap:10px;align-items:center"><span class="chip c-blue">On Board: AB 3000</span>${chip(7)}<span class="btn t">${ic('extend',13)} Extend</span><span class="btn">${ic('download',13)} Statement</span></div></div>
+<div class="row" style="flex:1">
+<div class="col" style="flex:1">
+<div class="card"><div class="ch"><h3>${ic('ship',16)} Assignment Timeline ${mk(1)}</h3></div>
+<div class="tl">
+<div class="tli" style="--c:#EA7A2E"><span class="tld"></span><div><b>AB 3000 — Handler</b> <span class="chip c-org" style="font-size:10px">Current</span><div class="muted" style="font-size:11.5px">14-Aug-2026 → 13-Oct-2026 · 61 days · ₹1,10,000 / month</div></div></div>
+<div class="tli" style="--c:#2E9E6A"><span class="tld"></span><div><b>Available (shore)</b><div class="muted" style="font-size:11.5px">15-Jun-2026 → 13-Aug-2026 · 60 days</div></div></div>
+<div class="tli" style="--c:#94A3B8"><span class="tld"></span><div><b>AB 3000 — Handler</b> <span class="chip c-grey" style="font-size:10px">Signed off</span><div class="muted" style="font-size:11.5px">01-Jun-2026 → 14-Jun-2026 · 14 days · contract completed</div></div></div>
+</div></div>
+<div class="card" style="flex:1"><div class="ch"><h3>${ic('file',16)} Documents ${mk(2)}</h3></div>
+${[['Aadhaar Card','Verified','c-grn'],['PAN Card (linked with Aadhaar)','Verified','c-grn'],['Medical Fitness — till 30-Jan-2027','Valid','c-grn'],['Contract — AB 3000 (Aug 2026)','PDF','c-grey'],['CDC — till 2029','Valid','c-grn']].map(d=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12px"><span>${ic('file',13)} ${d[0]}</span><span class="chip ${d[2]}" style="font-size:10px">${d[1]}</span></div>`).join('')}</div></div>
+<div class="card" style="flex:1.7;padding-bottom:4px;min-width:0"><div class="ch"><h3>${ic('rupee',16)} Month-wise Salary Ledger ${mk(3)}</h3><span class="sub">FY 2026-27</span></div>
+<table class="t sm"><thead><tr><th>Month</th><th>Vessel</th><th>Period</th><th class="c">Days</th><th class="r">Salary</th><th class="r">TDS</th><th class="r">PF</th><th class="r">Net Paid</th></tr></thead><tbody>
+${led.map(l=>`<tr><td><b>${l[0]}</b></td><td>${l[1]}</td><td>${l[2]}</td><td class="c">${l[3]||'—'}</td><td class="r">${l[4]?num(l[4]):'—'}</td><td class="r">${l[5]?num(l[5]):'—'}</td><td class="r">${l[6]?num(l[6]):'—'}</td><td class="r b">${l[9]?num(l[9]):'—'}</td></tr>`).join('')}
+<tr class="tot"><td colspan="3">TOTAL (FY to date)</td><td class="c">${led.reduce((s,l)=>s+l[3],0)}</td><td class="r">${num(led.reduce((s,l)=>s+l[4],0))}</td><td class="r">${num(led.reduce((s,l)=>s+l[5],0))}</td><td class="r">${num(led.reduce((s,l)=>s+l[6],0))}</td><td class="r">${num(led.reduce((s,l)=>s+l[9],0))}</td></tr></tbody></table>
+<div style="font-size:10.5px;margin-top:6px" class="muted">* October is provisional (running month, till today). June figures match your June-2026 AB 3000 sheet exactly.</div>
+<div class="alert blu" style="margin-top:12px;font-size:11.5px">${ic('report',15)} <b>Annual TDS summary</b> for this crew member (for Form 16A / tax queries) can be downloaded from Reports.</div></div></div>`)+notes([
+'<b>Assignment timeline</b>: every vessel served, sign-on and sign-off dates, and time spent available ashore.',
+'<b>All documents</b> in one place: KYC, medical, contracts and CDC, with their validity.',
+'<b>Month-wise salary ledger</b> for the financial year: days, salary, TDS, PF and net paid (conveyance included).'],
+'Very useful when a crew member calls asking <b>“how was my salary calculated?”</b>: everything is on one screen.')));
+
+/* ================= 17. REPORTS ================= */
+const REP=[['ship','Vessel Report','Crew list, contract status & cost per vessel'],['users','Crew Report','Crew master with status & documents'],['payroll','Salary Disbursement Sheet','Vessel-wise monthly sheet (your current Excel format)'],['xls','TDS Report — Client Format','Vessel / name / PAN / salary / TDS 10% / 2%'],['report','TDS Consolidated (Bharat)','All vessels, PAN-wise totals. Also in Bharat’s CA login'],['clock','Contract Expiry Report','Contracts ending in the selected period'],['alert','Overstay Report','Crew who stayed beyond contract & extra cost'],['med','Medical Expiry Report','Expired / expiring certificates'],['wallet','Advances & Deductions Register','Month-wise, crew-wise'],['free','Crew Availability Report','Who is free, since when, medical status']];
+const tdsRows=[...C.filter(c=>c.v==='AB 2000').map(c=>({v:'AB 2000',n:c.n,pan:c.pan,earn:c.rate,tax:c.tax})),...P.map(p=>({v:'AB 3000',n:p.n,pan:p.pan,earn:p.earn,tax:p.tax}))].filter(x=>x.tax!=='NIL').slice(0,12);
+pages.push(page('S-14','Reports Centre','All reports in one place: download as Excel or PDF in one click',
+screen('rep','reports','Reports Centre','Reports',`
+<div class="flt"><span class="pill">Month: <b>September 2026</b> ▾</span><span class="pill">Vessel: <b>All Vessels</b> ▾</span><span class="pill">FY: 2026-27 ▾</span>${mk(1)}</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px">${REP.map((r,i)=>`<div class="card" style="padding:10px 12px;${i===3?'border:2px solid var(--teal)':''}"><div style="display:flex;gap:8px;align-items:center"><div style="width:28px;height:28px;border-radius:8px;background:var(--teal-l);color:#0B7A85;display:flex;align-items:center;justify-content:center;flex:none">${ic(r[0],15)}</div><b style="font-size:12px;color:var(--navy);line-height:1.2">${r[1]}</b></div><div class="muted" style="font-size:10.5px;margin:6px 0 8px;min-height:26px">${r[2]}</div><div style="display:flex;gap:6px"><span class="btn sm">${ic('xls',11)} Excel</span><span class="btn sm">${ic('download',11)} PDF</span></div></div>`).join('')}</div>
+<div class="card" style="flex:1;padding-bottom:4px"><div class="ch"><h3>${ic('eye',16)} Preview — TDS Report (Client Format) — September 2026 ${mk(2)}</h3><span class="btn t sm">${ic('xls',12)} Download Excel for CA</span></div>
+<table class="t sm"><thead><tr><th>Vessel (Crew Name)</th><th>Name</th><th>PAN No.</th><th class="r">Total Salary</th><th class="r">TDS 10%</th><th class="r">Comm 2%</th><th class="r">TDS 20%</th></tr></thead><tbody>
+${tdsRows.map(x=>{const t=x.earn*(+x.tax)/100;return `<tr><td>${x.v}</td><td><b>${x.n.toUpperCase()}</b></td><td>${x.pan?x.pan.slice(0,5)+'••••'+x.pan.slice(9):'<span class="chip c-red" style="font-size:10px">PAN missing</span>'}</td><td class="r">${num(x.earn)}</td><td class="r">${x.tax==='10'?num(t):''}</td><td class="r">${x.tax==='2'?num(t):''}</td><td class="r">${x.tax==='20'?num(t):''}</td></tr>`}).join('')}
+</tbody></table></div>`)+notes([
+'<b>10 ready-made reports</b> with month / vessel / financial-year filters, each downloadable in <b>Excel</b> and <b>PDF</b>.',
+'<b>TDS Report in client format</b>, the same columns as your current “TDS WORKING” sheet (Vessel, Name, PAN, Total Salary, TDS 10%, Comm 2%), ready to send to the CA every month.'],
+'<b>TDS Consolidated (Bharat reference)</b> merges all vessels PAN-wise, so one crew member who worked on two vessels in a month shows as one line with the total.')));
+
+/* ================= 18. SETTINGS ================= */
+const perm=[['Dashboard & Countdown','✓','✓','✓','✓','—'],['Vessel / Crew / Medical Masters','✓','✓','View','View','—'],['Sign-On / Sign-Off / Extend','✓','✓','View','View','—'],['Expenses & Advances','✓','✓','✓','View','—'],['Monthly Payroll — Approve & Lock','✓','—','✓','View','—'],['Reports & Excel download','✓','✓','✓','✓','TDS only'],['Users & Settings','✓','—','—','—','—']];
+pages.push(page('S-15','Users, Roles & Settings','Control who can do what, configure payroll rules and alert timing, and see every change in the audit log',
+screen('set','settings','Users & Settings','Admin › Settings',`
+<div class="row">
+<div class="card" style="flex:1.2"><div class="ch"><h3>${ic('users',16)} User Roles & Permissions ${mk(1)}</h3><span class="btn t sm">${ic('plus',12)} Add User</span></div>
+<table class="t sm perm"><thead><tr><th>Module</th><th class="c">Admin</th><th class="c">Operations</th><th class="c">Accounts</th><th class="c">Mgmt.</th><th class="c" style="background:#E3F6F7;color:#0B7A85">CA (Bharat)</th></tr></thead><tbody>
+${perm.map(p=>`<tr><td>${p[0]}</td>${p.slice(1).map(x=>`<td class="c ${x==='✓'?'grn b':'muted'}" style="font-size:${x==='✓'?'14px':'11px'}">${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+<div class="card" style="flex:1"><div class="ch"><h3>${ic('rupee',16)} Payroll Rules ${mk(2)}</h3></div>
+<div class="fg"><div class="f s2"><label>Pro-rata day basis</label><div class="seg"><span class="on">Actual days in month</span><span>Fixed 30 days</span></div></div>
+<div class="f"><label>TDS rates (%)</label><div class="i">10 · 2 · 20%</div></div>
+<div class="f"><label>PF (Domestic)</label><div class="i">12% of basic</div></div>
+<div class="f"><label>Leave contribution</label><div class="i">3.6% of basic</div></div>
+<div class="f"><label>Rounding</label><div class="i dd">Nearest ₹</div></div></div></div></div>
+<div class="row" style="flex:1">
+<div class="card" style="flex:1"><div class="ch"><h3>${ic('bell',16)} Alert Settings ${mk(3)}</h3></div>
+<div class="fg"><div class="f s2"><label>Contract expiry alerts at (days before)</label><div class="flt"><span class="pill on">60</span><span class="pill on">30</span><span class="pill on">15</span><span class="pill on">7</span><span class="pill on">On end date</span></div></div>
+<div class="f"><label>Medical expiry alert</label><div class="i">30 days before</div></div>
+<div class="f"><label>Login pop-up</label><div class="seg"><span class="on">On</span><span>Off</span></div></div>
+<div class="f"><label>Daily email digest to</label><div class="i">ops@…, accounts@…</div></div>
+<div class="f"><label>WhatsApp / SMS alerts</label><div class="i ro">Phase 2 (optional)</div></div></div></div>
+<div class="card" style="flex:1.2;padding-bottom:4px"><div class="ch"><h3>${ic('eye',16)} Audit Log ${mk(4)}</h3><span class="sub">Every change is recorded</span></div>
+<table class="t sm"><thead><tr><th>When</th><th>User</th><th>Action</th></tr></thead><tbody>
+${[['06-Oct 09:14','ops.admin','Login alerts acknowledged — 15 items reviewed'],['05-Oct 17:40','accounts1','Conveyance ₹3,300 added — C. B. Prasad'],['05-Oct 11:02','ops.user2','Contract extended — Vishal Kumar, Matsya → 15-Dec'],['03-Oct 16:25','accounts1','Payroll Aug-2026 AB 3000 approved & locked'],['02-Oct 10:11','ops.user2','Salary advance ₹10,000 — Bhupendra Singh'],['01-Oct 12:30','ops.admin','Medical uploaded — Pankaj Kumar (till Jun-2027)'],['30-Sep 18:05','ops.user2','Salary revised ₹1,10,000 — C. B. Prasad']].map(a=>`<tr><td class="muted">${a[0]}</td><td><b>${a[1]}</b></td><td style="white-space:normal">${a[2]}</td></tr>`).join('')}
+</tbody></table></div></div>`)+notes([
+'<b>Five roles</b>: Admin, Operations (data entry), Accounts (payroll &amp; TDS), Management (view-only) and <b>CA (Bharat)</b>, which sees TDS reports only (S-16).',
+'<b>Payroll rules are settings, not code</b>. If TDS / PF rates or the day basis change, Admin updates them here.',
+'<b>Alert timing</b> is configurable, with an optional daily email to operations and accounts.',
+'<b>Audit log</b>: who added, edited, approved or deleted what, and when. This gives full accountability.'],
+'<b>Security:</b> encrypted passwords, HTTPS, session timeout, and uploaded documents stored securely on the server.')));
+
+/* ================= 19. CA PORTAL (BHARAT) ================= */
+const SEP1=new Date(2026,8,1),SEP30=new Date(2026,8,30);
+const sepDays=c=>{const a=Math.max(D(c.s),SEP1),b=Math.min(D(c.e),SEP30);return b<a?0:Math.round((b-a)/864e5)+1};
+const VT=V.map(v=>{const rows=(v.n==='AB 3000'?P.map(p=>({earn:p.earn,tax:p.tax,pan:p.pan})):C.filter(c=>c.v===v.n).map(c=>{const d=sepDays(c);return{earn:c.b==='PD'?c.rate*d:c.rate/30*d,tax:c.tax,pan:c.pan}})).filter(r=>r.earn>0&&r.tax!=='NIL');
+ const t=k=>rows.reduce((s,r)=>s+(r.tax===k?r.earn*(+k)/100:0),0);
+ return{n:v.n,cnt:rows.length,gross:rows.reduce((s,r)=>s+r.earn,0),t10:t('10'),t2:t('2'),t20:t('20'),lock:v.n!=='Varaha'}}).filter(v=>v.cnt>0);
+const VS=k=>VT.filter(v=>v.lock).reduce((s,v)=>s+v[k],0);
+function sideCA(){return `<aside class="side"><div class="brand"><div class="lg">${logo()}</div><div><b>BEACON MARINE</b><small>CA Portal · Tax Reports</small></div></div>
+<div class="sec">TAX PORTAL</div>${[['dash','TDS Dashboard',1],['report','TDS Reports'],['users','PAN-wise TDS Ledger'],['download','Downloads']].map(m=>`<div class="mi ${m[2]?'on':''}">${ic(m[0],16)}${m[1]}</div>`).join('')}
+<div class="sec">ACCESS</div><div class="mi">${ic('lock',16)}Read-only access</div><div class="mi">${ic('eye',16)}Locked months only</div>
+<div class="foot">Logged in as Bharat (CA)<br>Access granted by Beacon Admin</div></aside>`}
+const caBody=`
+<div class="flt"><span class="pill">Month: <b>September 2026</b> ▾</span><span class="pill">FY: <b>2026-27</b> ▾</span><span class="pill">Vessel: <b>All</b> ▾</span><span class="chip c-grn">${ic('lock',11)} Showing payroll approved &amp; locked by Beacon</span>${mk(1)}</div>
+<div class="kpis" style="grid-template-columns:repeat(5,1fr)">${[['Total TDS — Sep 2026',inr(VS('t10')+VS('t2')+VS('t20')),'All locked vessels','#0B2545'],['TDS @ 10%',inr(VS('t10')),'Professional','#1D4E89'],['TDS @ 2%',inr(VS('t2')),'Contract / commission','#0FA3B1'],['TDS @ 20%',inr(VS('t20')),'PAN not available','#B42318'],['Deductees',VS('cnt'),'Crew with TDS','#7C3AED']].map(k=>`<div class="kpi" style="--k:${k[3]}"><div class="l">${k[0]}</div><div class="v" style="font-size:20px">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('')}</div>
+<div class="row" style="flex:1">
+<div class="card" style="flex:1.55;padding-bottom:4px;min-width:0"><div class="ch"><h3>${ic('ship',16)} Vessel-wise TDS Summary ${mk(2)}</h3><span class="btn t sm">${ic('xls',12)} Excel</span></div>
+<table class="t sm"><thead><tr><th>Vessel</th><th class="c">Crew</th><th class="r">Gross</th><th class="r">TDS 10%</th><th class="r">TDS 2%</th><th class="r">TDS 20%</th><th>Status</th></tr></thead><tbody>
+${VT.map(v=>`<tr><td><b>${v.n}</b></td><td class="c">${v.cnt}</td><td class="r">${num(v.gross)}</td><td class="r">${v.t10?num(v.t10):'—'}</td><td class="r">${v.t2?num(v.t2):'—'}</td><td class="r">${v.t20?num(v.t20):'—'}</td><td>${v.lock?'<span class="chip c-grn" style="font-size:10px">Locked ✓</span>':'<span class="chip c-amb" style="font-size:10px">Awaiting</span>'}</td></tr>`).join('')}
+<tr class="tot"><td>TOTAL (locked)</td><td class="c">${VS('cnt')}</td><td class="r">${num(VS('gross'))}</td><td class="r">${num(VS('t10'))}</td><td class="r">${num(VS('t2'))}</td><td class="r">${num(VS('t20'))}</td><td></td></tr></tbody></table></div>
+<div class="col" style="flex:1">
+<div class="card"><div class="ch"><h3>${ic('download',16)} Downloads ${mk(3)}</h3></div>
+${[['TDS Report — Client Format','Vessel / Name / PAN / Salary / TDS'],['TDS Consolidated — PAN-wise','One line per PAN, all vessels'],['Rate-wise TDS Summary','10% / 2% / 20% totals for challan & return'],['PAN Missing List','Crew deducted at 20%']].map(d=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line)"><div style="flex:1;min-width:0"><b style="font-size:12px;color:var(--navy)">${d[0]}</b><div class="muted" style="font-size:10.5px">${d[1]}</div></div><span class="btn sm">${ic('xls',11)} Excel</span></div>`).join('')}</div>
+<div class="card" style="flex:1"><div class="ch"><h3>${ic('users',16)} PAN-wise Annual TDS ${mk(4)}</h3></div>
+<div class="f" style="margin-bottom:8px"><div class="i">${ic('search',13)} AYSPP••••N <span class="muted" style="margin-left:auto;font-size:11px">FY 2026-27</span></div></div>
+<div class="kv"><span>Crew</span><b>Chandra Bhushan Prasad</b><span>Vessels</span><b>AB 3000</b><span>Salary (FY to date)</span><b>₹2,46,494</b><span>TDS deducted</span><b style="color:var(--navy)">₹24,649</b></div>
+<div class="btn sm" style="margin-top:10px">${ic('download',11)} Download crew TDS statement</div></div>
+</div></div>`;
+pages.push(page('S-16','CA Portal — Login for Bharat (Tax Consultant)','A separate read-only login so Bharat can view and download TDS reports directly from the system every month',
+shot('ca/tds-dashboard',`${sideCA()}<div class="main">${topbar('TDS Dashboard','CA Portal › TDS Dashboard',['BH','Bharat — CA Firm','Tax Consultant · Read-only'])}<div class="content">${caBody}</div></div>`,SPLIT)+notes([
+'<b>Separate login for Bharat</b>, with a CA-only menu. Only <b>locked months</b> are shown, i.e. payroll already approved by Beacon Accounts, so figures never change after Bharat downloads them.',
+'<b>Vessel-wise TDS summary</b> for the selected month, split by rate (10% / 2% / 20%). Vessels not yet locked show as “Awaiting Beacon”.',
+'<b>One-click Excel downloads</b>: the TDS report in client format, the PAN-wise consolidated report, a rate-wise summary for challan &amp; returns, and a PAN-missing list.',
+'<b>PAN-wise annual TDS</b> for any crew member across all vessels, for TDS certificates and tax queries.'],
+'<b>Read-only &amp; private:</b> Bharat <b>cannot</b> see or change contracts, bank details or Aadhaar, or enter any data. Every download is recorded in the audit log, and Beacon Admin can switch this access on or off at any time.')));
+
+/* ================= 20. CONFIRM + NEXT STEPS ================= */
+const QS=[['Pro-rata day basis','Salary is calculated on the <b>actual number of days in the month</b> (28 / 29 / 30 / 31).',1],
+['Add-on expenses: in salary or not','Decided <b>per expense entry</b>: either <b>added to the salary payout</b>, or <b>company-borne</b> (e.g. travel to the vessel paid by the company) and shown only in the vessel cost.',1],
+['CA login for Bharat','Bharat (the tax consultant) gets its own <b>read-only login</b> to view and download TDS reports for locked months (see screen S-16).',1],
+['PF & Leave calculation','From your sheets PF ≈ 12% and Leave ≈ 3.6% of a fixed PF basic per crew, on Domestic vessels only. Please confirm the PF basic amount per rank / crew.'],
+['Sign-on / sign-off day counting','When one crew member is relieved by another on 14th, both are paid for the 14th (as in your sheets). Please confirm this is the rule.'],
+['Advance recovery','Is an advance always recovered fully in the same month, or can it be split into instalments over the next months?'],
+['User Panel (“yet to decide”)','Suggestion: Phase 2 read-only login for vessel in-charge / crew to see their contract, days left and salary slips.'],
+['Alerts channel','Login pop-up and dashboard are included. Should we also send a daily email? WhatsApp / SMS can be added in Phase 2.']];
+pages.push(page('03','Points to Confirm & Next Steps','Rules already confirmed, and a few still to confirm before development starts',`
+<div style="flex:1.6;display:flex;flex-direction:column;gap:10px" class="doc"><h3>${ic('alert',16)} Business rules: confirmed &amp; open points</h3>
+<div class="qa">${QS.map((q,i)=>`<div class="q" style="${q[2]?'border-left-color:#2E9E6A;background:#F6FCF8':''}"><b>${i+1}. ${q[0]}</b><p>${q[1]}</p>${q[2]?`<div class="ans" style="color:#18794E">${ic('check',11,3)} Confirmed</div>`:'<div class="ans">To confirm: ______________________</div>'}</div>`).join('')}</div></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px" class="doc">
+<div class="box"><h3>${ic('settings',16)} Technology</h3><ul><li><b>Application:</b> ASP.NET (C#), responsive web app that works on desktop, tablet and mobile browsers</li><li><b>Database:</b> Microsoft SQL Server</li><li><b>Documents:</b> PDF / image uploads stored securely on the server</li><li><b>Exports:</b> Excel (.xlsx) and PDF</li><li><b>Security:</b> HTTPS, role-based login, encrypted passwords, audit log</li></ul></div>
+<div class="box" style="flex:1"><h3>${ic('check',16)} Next steps</h3>
+<div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">${[['1','Client reviews this prototype and answers the open points on the left'],['2','Final scope & sign-off on screens'],['3','Development: Masters → Contracts → Dashboard & Alerts → Payroll → Reports → CA Portal'],['4','Testing with Beacon team, then go-live']].map(s=>`<div style="display:flex;gap:10px;align-items:center"><span style="width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none">${s[0]}</span><span style="font-size:11px;color:#334155">${s[1]}</span></div>`).join('')}</div>
+<div style="margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;align-items:center;gap:12px"><span class="wc" style="width:40px;height:40px;font-size:15px;border-radius:10px">WC</span><div style="font-size:11px;line-height:1.5;color:#334155">Designed &amp; developed by<br><b style="font-size:13px;color:var(--navy)">WebControls Services</b> · <a href="https://webcontrols.in/" target="_blank" rel="noopener" style="color:var(--teal);font-weight:700;text-decoration:none">https://webcontrols.in/</a></div></div></div>
+</div>`));
+
+document.getElementById('doc').innerHTML=pages.join('');
+/* group loose text inside alert bars so inline bold text flows as one paragraph */
+document.querySelectorAll('.alert').forEach(a=>{let span=null;[...a.childNodes].forEach(n=>{const keep=n.nodeType===1&&(n.tagName==='svg'||n.classList.contains('btn')||n.tagName==='DIV');if(keep){span=null;return}if(!span){span=document.createElement('span');span.style.flex='1';a.insertBefore(span,n)}span.appendChild(n)})});
+function fit(){document.documentElement.style.setProperty('--fit',Math.min(1,(innerWidth-12)/1160).toFixed(3))}fit();addEventListener('resize',fit);
+/* #p3 shows a single page (used for previews) */
+const only=+location.hash.slice(2);if(only){removeEventListener('resize',fit);document.documentElement.style.setProperty('--fit','1');document.querySelectorAll('.page').forEach((p,i)=>{if(i+1!==only)p.remove();else p.style.margin='0'})}
+</script>
+</body>
+</html>
