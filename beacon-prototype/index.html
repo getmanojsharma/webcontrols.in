@@ -796,7 +796,7 @@ pages.push(page('03','Points to Confirm & Next Steps','Rules already confirmed, 
 document.getElementById('doc').innerHTML=pages.join('');
 /* group loose text inside alert bars so inline bold text flows as one paragraph */
 document.querySelectorAll('.alert').forEach(a=>{let span=null;[...a.childNodes].forEach(n=>{const keep=n.nodeType===1&&(n.tagName==='svg'||n.classList.contains('btn')||n.tagName==='DIV');if(keep){span=null;return}if(!span){span=document.createElement('span');span.style.flex='1';a.insertBefore(span,n)}span.appendChild(n)})});
-function fit(){document.documentElement.style.setProperty('--fit',Math.min(1,(innerWidth-12)/1160).toFixed(3))}fit();addEventListener('resize',fit);
+function fit(){const w=innerWidth||document.documentElement.clientWidth||1160;document.documentElement.style.setProperty('--fit',Math.max(.3,Math.min(1,(w-12)/1160)).toFixed(3))}fit();addEventListener('resize',fit);
 /* #p3 shows a single page (used for previews) */
 const only=+location.hash.slice(2);if(only){removeEventListener('resize',fit);document.documentElement.style.setProperty('--fit','1');document.querySelectorAll('.page').forEach((p,i)=>{if(i+1!==only)p.remove();else p.style.margin='0'})}
 </script>
